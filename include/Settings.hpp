@@ -6,6 +6,7 @@
 
 extern bool vsync;
 extern bool showFPS;
+extern double perlinScale;
 
 void Save();
 void Load();

@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-only
 
+#include "Drawing.hpp"
 #include "Settings.hpp"
-#include "UI.hpp"
 #include <raygui.h>
 
 #if defined(PLATFORM_WEB)
@@ -27,6 +27,8 @@ int main()
     SetExitKey(-1);
 
     GuiSetFont(GetFontDefault());
+
+    InitGPU();
 
 #if defined(PLATFORM_WEB)
     emscripten_set_main_loop(DrawFrame, 0, 1);

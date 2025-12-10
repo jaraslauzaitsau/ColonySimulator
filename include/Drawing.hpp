@@ -4,4 +4,9 @@
 
 #pragma once
 
-void DrawUI();
+#include <raylib.h>
+
+extern Vector2 windowSize;
+
+void InitGPU();
+void DrawFrame();
