@@ -26,7 +26,6 @@ float perlin(vec2 p)
     vec2 f0 = fract(p);
 
     vec2 i1 = i0 + vec2(1.0);
-    vec2 f1 = f0 - vec2(1.0);
 
     vec2 g00 = gradient(i0);
     vec2 g10 = gradient(vec2(i1.x, i0.y));

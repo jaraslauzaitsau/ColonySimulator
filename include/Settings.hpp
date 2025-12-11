@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <raylib.h>
+#include <raymath.h>
 
 extern bool vsync;
 extern bool showFPS;
