@@ -7,6 +7,8 @@
 extern bool vsync;
 extern bool showFPS;
 extern double perlinScale;
+extern double panSensitivity;
+extern double wheelSensitivity;
 
 void Save();
 void Load();

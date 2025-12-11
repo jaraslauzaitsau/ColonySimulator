@@ -22,7 +22,7 @@ inline Color ColorFromHex(const std::string& hexIn)
                   g = 16 * hexMap[hex[3]] + hexMap[hex[4]],
                   b = 16 * hexMap[hex[5]] + hexMap[hex[6]];
     return {r, g, b, 255};
-}
+}   
 
 struct Biome
 {
@@ -37,6 +37,8 @@ std::vector<Biome> biomes = {{-1, ColorFromHex("#0000ff")},    {-0.7, ColorFromH
                              {0.6, ColorFromHex("#ffffffff")}};
 
 Vector2 windowSize{16 * 50 * 2, 9 * 50 * 2};
+Vector2 perlinOffset = {0, 0};
+double timer = 0;
 Shader biomeShader;
 bool lastVsync = vsync;
 
@@ -49,7 +51,8 @@ void InitGPU()
                    SHADER_UNIFORM_INT);
 
     float seed = GetTime();
-    SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uSeed"), &seed, SHADER_UNIFORM_FLOAT);
+    SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uSeed"), &seed,
+                   SHADER_UNIFORM_FLOAT);
 
     {
         float starts[8];
@@ -88,11 +91,31 @@ void DrawFrame()
     SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uResolution"), res,
                    SHADER_UNIFORM_VEC2);
 
+    float offset[2] = {perlinOffset.x, perlinOffset.y};
+    SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uOffset"), &offset,
+                   SHADER_UNIFORM_VEC2);
+
     BeginShaderMode(biomeShader);
     DrawRectangle(0, 0, windowSize.x, windowSize.y, WHITE);
     EndShaderMode();
 
+    BeginDrawing();
+
     DrawUI();
+
+    double deltaTime = GetTime() - timer;
+
+    if (IsKeyDown(KEY_UP)) perlinOffset.y += panSensitivity * perlinScale * deltaTime;
+    if (IsKeyDown(KEY_DOWN)) perlinOffset.y -= panSensitivity * perlinScale * deltaTime;
+    if (IsKeyDown(KEY_LEFT)) perlinOffset.x -= panSensitivity * perlinScale * deltaTime;
+    if (IsKeyDown(KEY_RIGHT)) perlinOffset.x += panSensitivity * perlinScale * deltaTime;
+
+    double wheelMove = GetMouseWheelMove();
+    if (wheelMove > 0) perlinScale -= wheelSensitivity * wheelMove * deltaTime;
+    if (wheelMove < 0) perlinScale -= wheelSensitivity * wheelMove * deltaTime;
+    perlinScale = std::max(0.0, perlinScale);
+
+    timer = GetTime();
 
     if (lastVsync != vsync)
     {
@@ -102,4 +125,6 @@ void DrawFrame()
         else
             SetWindowState(FLAG_VSYNC_HINT);
     }
+
+    EndDrawing();
 }

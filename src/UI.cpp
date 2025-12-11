@@ -34,14 +34,10 @@ void DrawSettings(bool* isOpen)
 
 void DrawUI()
 {
-    BeginDrawing();
-
     if (showFPS) DrawFPS(0, 0);
 
     if (GuiButton(Rectangle{(float)GetScreenWidth() - 30, 0, 30, 30}, "#142#"))
         isSettings = !isSettings;
 
     DrawSettings(&isSettings);
-
-    EndDrawing();
 }

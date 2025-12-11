@@ -9,6 +9,8 @@
 bool vsync = true;
 bool showFPS = true;
 double perlinScale = 0.01;
+double panSensitivity = 500;
+double wheelSensitivity = 0.1;
 
 std::vector<std::string> Split(std::string input, char delimiter = ' ')
 {
