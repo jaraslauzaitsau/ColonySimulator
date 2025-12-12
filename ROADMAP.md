@@ -2,17 +2,20 @@
 
 ## Minimum Viable Product (MVP) description
 
+![image](resources/RoadmapMVP.png)
+
 ### World generation
 
 The world is made of islands and seas generated using Perlin noise.
 
 ### Colonizing feature
 
-Every island has a cost of colonization that is paid in in-game resources: wood and iron. If a player has enough resources to colonize the island, then it will be added to the empire after clicking on the island. The price raises, as the islands get farther away from the main island.
+Every island has a cost of colonization that is paid in in-game resources: wood and iron. If a player has enough resources to colonize the island, then it will be added to the empire after clicking on the island. The price increases, as the islands get farther away from the main island and/or get bigger in area.
 
 ### Empire growth
 
 Every set period of time (around a second), a growth tick happens, which increases the following resources:
+
 - People. Growth depends on the amount of people already living in the empire. The formula looks something like that: (peopleAmount * marriedPercent) / 2, where marriedPercent is set to a balanced value
 - Wood. Growth is calculated by the following formula: totalAreaColonized * woodGrowthFactor, where woodGrowthFactor is a balanced value
 
