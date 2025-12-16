@@ -35,6 +35,7 @@ void Island::SendPeople(int count)
     int maxPeopleIslandId = 0;
     for (size_t i = 0; i < islands.size(); i++)
     {
+        if (&islands[i] == this) continue;
         if (islands[i].peopleCount > islands[maxPeopleIslandId].peopleCount) maxPeopleIslandId = i;
     }
     if (islands[maxPeopleIslandId].peopleCount < count) return;

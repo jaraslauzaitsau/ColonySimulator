@@ -14,12 +14,12 @@ struct Biome
     Biome(float startLevel, const Color& color) : startLevel(startLevel), color(color) {}
 };
 
-#define WOOD_COLONIZE_K 0.02f
-#define IRON_COLONIZE_K 0.005f
+#define WOOD_COLONIZE_K 0.05f
+#define IRON_COLONIZE_K 0.004f
 #define WOOD_K 0.02f
-#define WOOD_GROWTH_K 0.005f
+#define WOOD_GROWTH_K 0.002f
 #define IRON_K 0.005f
-#define PEOPLE_K 0.005f
+#define PEOPLE_K 0.001f
 
 #define GROWTH_PERIOD 1
 #define WOOD_GET_K 3

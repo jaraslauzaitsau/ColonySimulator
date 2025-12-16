@@ -112,7 +112,7 @@ void DrawStats(const Island& island, Color color)
 
     // Constants
     const float margin = 100 * scale, lockScale = 0.5f * scale, woodScale = 0.15f * scale,
-                ironScale = 0.15f * scale, textScale = 120 * scale;
+                ironScale = 0.15f * scale, humanScale = 0.075f * scale, textScale = 120 * scale;
 
     // Calculate the center point of the island
     Vector2 center = GlslToRaylib((island.p2 + island.p1) / 2);
@@ -140,11 +140,11 @@ void DrawStats(const Island& island, Color color)
     };
 
     // Draw a dark background for better text visibility
-    DrawRectangleRounded(
-        {center.x + offset.x - lockTexture.width * lockScale / 2, center.y + offset.y - margin / 2,
-         lockTexture.width * lockScale * 2,
-         (woodTexture.height * woodScale + ironTexture.height * ironScale) + margin * 2},
-        0.25f, 16, {0, 0, 0, 127});
+    DrawRectangleRounded({center.x + offset.x - lockTexture.width * lockScale / 2,
+                          center.y + offset.y - margin / 2, lockTexture.width * lockScale * 2,
+                          woodTexture.height * woodScale + ironTexture.height * ironScale +
+                              humanTexture.height * humanScale + margin * 3},
+                         0.25f, 16, {0, 0, 0, 127});
 
     // Draw wood
     DrawTextureEx(woodTexture, center + offset - Vector2{woodTexture.width * woodScale / 2, 0}, 0,
@@ -165,12 +165,23 @@ void DrawStats(const Island& island, Color color)
                  textOffset.x, textOffset.y, textScale, WHITE);
     }
     offset.y += ironTexture.height * ironScale + margin;
+
+    // Draw people
+    DrawTextureEx(humanTexture, center + offset - Vector2{humanTexture.width * humanScale / 2, 0},
+                  0, humanScale, WHITE);
+    {
+        Vector2 textOffset = GetTextOffset(humanTexture, humanScale);
+        DrawText(std::to_string(island.peopleCount).c_str(), textOffset.x, textOffset.y, textScale,
+                 WHITE);
+    }
+    offset.y += humanTexture.height * humanScale + margin;
 }
 
 void DrawResources()
 {
     // Constants
-    const float margin = 10, woodScale = 0.03f, ironScale = 0.03f, textScale = 24;
+    const float margin = 10, woodScale = 0.03f, ironScale = 0.03f, humanScale = 0.01f,
+                textScale = 24;
 
     // Calculate the offset
     Vector2 offset = {margin, margin};
@@ -184,10 +195,11 @@ void DrawResources()
     };
 
     // Draw a dark background for better text visibility
-    DrawRectangleRounded(
-        {0, 0, fmax(woodTexture.width * woodScale, ironTexture.width * ironScale) * 2.5f,
-         (woodTexture.height * woodScale + ironTexture.height * ironScale) + margin * 3},
-        0.25f, 16, {0, 0, 0, 127});
+    DrawRectangleRounded({0, 0,
+                          fmax(woodTexture.width * woodScale, ironTexture.width * ironScale) * 2.5f,
+                          woodTexture.height * woodScale + ironTexture.height * ironScale +
+                              humanTexture.height * humanScale + margin * 5},
+                         0.25f, 16, {0, 0, 0, 127});
 
     // Draw wood
     DrawTextureEx(woodTexture, offset, 0, woodScale, WHITE);
@@ -204,6 +216,15 @@ void DrawResources()
         DrawText(std::to_string(ironTotal).c_str(), textOffset.x, textOffset.y, textScale, WHITE);
     }
     offset.y += ironTexture.height * ironScale + margin;
+
+    // Draw people
+    DrawTextureEx(humanTexture, offset + Vector2{humanTexture.width * humanScale, 0}, 0, humanScale,
+                  WHITE);
+    {
+        Vector2 textOffset = GetTextOffset(humanTexture, humanScale);
+        DrawText(std::to_string(peopleTotal).c_str(), textOffset.x, textOffset.y, textScale, WHITE);
+    }
+    offset.y += humanTexture.height * humanScale + margin;
 }
 
 void GrowthTick()
@@ -292,7 +313,7 @@ void DrawFrame()
             {
                 std::cout << "Clicked on island with id: " << i << '\n';
                 if (islands[i].colonized)
-                    islands[i].peopleCount++;
+                    islands[i].SendPeople(1);
                 else
                     islands[i].Colonize();
                 break;
