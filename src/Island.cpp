@@ -95,14 +95,14 @@ void BuildIslands(float stepSize)
     std::cout << "Found " << passed << " large enough islands\n";
 
     // Set the closest island to center as colonized
-    // [TODO]: Make at actually work
-    // int minDistanceIslandIdx = 0;
-    // for (size_t i = 0; i < islands.size(); i++)
-    // {
-    //     const auto &island = islands[i], &minIsland = islands[minDistanceIslandIdx];
-    //     if (abs(Vector2Distance(Vector2{0, 0}, (island.p2 - island.p1) / 2)) <
-    //         abs(Vector2Distance(Vector2{0, 0}, (minIsland.p2 - minIsland.p1) / 2)))
-    //         minDistanceIslandIdx = i;
-    // }
-    // islands[minDistanceIslandIdx].colonized = true;
+    // [TODO]: Make it actually work
+    int minDistanceIslandIdx = 0;
+    for (size_t i = 0; i < islands.size(); i++)
+    {
+        const auto &island = islands[i], &minIsland = islands[minDistanceIslandIdx];
+        if (abs(Vector2Distance(Vector2{0, 0}, (island.p2 + island.p1) / 2)) <
+            abs(Vector2Distance(Vector2{0, 0}, (minIsland.p2 + minIsland.p1) / 2)))
+            minDistanceIslandIdx = i;
+    }
+    islands[minDistanceIslandIdx].colonized = true;
 }
