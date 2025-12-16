@@ -19,6 +19,7 @@ struct Biome
 #define WOOD_K 0.02f
 #define WOOD_GROWTH_K 0.005f
 #define IRON_K 0.005f
+#define PEOPLE_K 0.005f
 
 struct Island
 {
@@ -38,5 +39,9 @@ struct Island
 extern std::vector<Biome> biomes;
 extern std::vector<Island> islands;
 extern std::vector<std::pair<Vector2, Color>> points;
+
+extern int woodTotal;
+extern int ironTotal;
+extern int peopleTotal;
 
 void BuildIslands(float stepSize = 0.1f);

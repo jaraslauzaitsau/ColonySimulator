@@ -19,6 +19,8 @@ std::vector<Biome> biomes = {{-1, rgb(0, 0, 255)},     {-0.5, rgb(0, 136, 255)},
 std::vector<Island> islands;
 std::vector<std::pair<Vector2, Color>> points;
 
+int woodTotal = 0, ironTotal = 0, peopleTotal = 0;
+
 #define LAND_START biomes[3].startLevel
 
 void BuildIslands(float stepSize)
@@ -95,7 +97,6 @@ void BuildIslands(float stepSize)
     std::cout << "Found " << passed << " large enough islands\n";
 
     // Set the closest island to center as colonized
-    // [TODO]: Make it actually work
     int minDistanceIslandIdx = 0;
     for (size_t i = 0; i < islands.size(); i++)
     {
@@ -105,4 +106,12 @@ void BuildIslands(float stepSize)
             minDistanceIslandIdx = i;
     }
     islands[minDistanceIslandIdx].colonized = true;
+
+    // Set start resources
+    auto& minIsland = islands[minDistanceIslandIdx];
+    float distance = Vector2Distance(Vector2{0, 0}, (minIsland.p2 + minIsland.p1) / 2);
+    float cost = distance * minIsland.area;
+    woodTotal = cost * WOOD_K;
+    ironTotal = cost * IRON_K;
+    peopleTotal = cost * PEOPLE_K;
 }

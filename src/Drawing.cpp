@@ -106,6 +106,47 @@ void DrawStats(const Island& island, Color color)
     offset.y += ironTexture.height * ironScale + margin;
 }
 
+void DrawResources()
+{
+    // Constants
+    const float margin = 10, woodScale = 0.03f, ironScale = 0.03f, textScale = 24;
+
+    // Calculate the offset
+    Vector2 offset = {margin, margin};
+
+    auto GetTextOffset = [&](const Texture& texture, float textureScale) -> Vector2
+    {
+        Vector2 newOffset = offset;
+        newOffset.x +=
+            fmax(woodTexture.width * woodScale, ironTexture.width * ironScale) + margin;
+        newOffset.y += (texture.height * textureScale - textScale) / 2;
+        return newOffset;
+    };
+
+    // Draw a dark background for better text visibility
+    DrawRectangleRounded(
+        {0, 0, fmax(woodTexture.width * woodScale, ironTexture.width * ironScale) * 2.5f,
+         (woodTexture.height * woodScale + ironTexture.height * ironScale) + margin * 3},
+        0.25f, 16, {0, 0, 0, 127});
+
+    // Draw wood
+    DrawTextureEx(woodTexture, offset, 0, woodScale,
+                  WHITE);
+    {
+        Vector2 textOffset = GetTextOffset(woodTexture, woodScale);
+        DrawText(std::to_string(woodTotal).c_str(), textOffset.x, textOffset.y, textScale, WHITE);
+    }
+    offset.y += woodTexture.height * woodScale + margin;
+
+    // Draw iron
+    DrawTextureEx(ironTexture, offset, 0, ironScale, WHITE);
+    {
+        Vector2 textOffset = GetTextOffset(ironTexture, ironScale);
+        DrawText(std::to_string(ironTotal).c_str(), textOffset.x, textOffset.y, textScale, WHITE);
+    }
+    offset.y += ironTexture.height * ironScale + margin;
+}
+
 void InitGPU()
 {
     lockTexture = LoadTexture("resources/lock.png");
@@ -214,6 +255,8 @@ void DrawFrame()
     {
         DrawStats(islands[i], ColorFromHSV(i * 360.0f / islands.size(), 1, 1));
     }
+
+    DrawResources();
 
     DrawUI();
 

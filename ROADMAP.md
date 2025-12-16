@@ -34,7 +34,7 @@ Every island that hasn't been colonized yet has a lock icon in the middle of it 
 - [x] World generation
 - [x] Island extraction from the map
 - [ ] Colonize the island by clicking it
-- [ ] Empire's resources counters
+- [x] Empire's resources counters
 - [x] Draw a lock on top of uncolonized islands
 - [x] Set a price to colonize an island
 - [ ] Colonized islands wood growth
