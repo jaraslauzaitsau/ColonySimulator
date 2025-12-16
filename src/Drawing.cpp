@@ -57,7 +57,7 @@ void InitGPU()
     SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uBiomeCount"), &biomeCount,
                    SHADER_UNIFORM_INT);
 
-    // perlinSeed = time(0);
+    perlinSeed = time(0);
     SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uSeed"), &perlinSeed,
                    SHADER_UNIFORM_FLOAT);
 

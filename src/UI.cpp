@@ -42,9 +42,9 @@ void DrawUI()
     if (GuiButton(Rectangle{windowSize.x - ELEMENT_SIZE, 0, ELEMENT_SIZE, ELEMENT_SIZE}, "#142#"))
         isSettings = !isSettings;
 
-    if (GuiButton(Rectangle{windowSize.x - ELEMENT_SIZE * 2, 0, ELEMENT_SIZE, ELEMENT_SIZE},
-                  "#140#"))
-        showIslandsBoxes = !showIslandsBoxes;
+    // if (GuiButton(Rectangle{windowSize.x - ELEMENT_SIZE * 2, 0, ELEMENT_SIZE, ELEMENT_SIZE},
+    //               "#140#"))
+    //     showIslandsBoxes = !showIslandsBoxes;
 
     DrawSettings(&isSettings);
 }
