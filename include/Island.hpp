@@ -25,6 +25,7 @@ struct Biome
 #define K_WOOD_GET 3
 #define K_IRON_GET 1
 #define K_EFFICIENCY 5
+#define DEFAULT_TAXES 67
 
 struct Island
 {
@@ -33,7 +34,7 @@ struct Island
     int woodColonize = 0, ironColonize = 0, woodCount = 0, woodGrowth = 0, ironCount = 0,
         peopleCount = 0, woodMax = 0;
     bool colonized = false;
-    int taxes = 50, efficiency = 50;
+    int taxes = DEFAULT_TAXES, efficiency = 100;
 
     Island(Vector2 p1, Vector2 p2, float area, int woodColonize, int ironColonize, int woodCount,
            int woodGrowth, int ironCount)

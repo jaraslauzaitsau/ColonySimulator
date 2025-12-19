@@ -58,14 +58,14 @@ void Island::GrowthTick()
         ironCount -= delta;
         ironTotal += delta;
     }
-    if (taxes < 50)
+    if (taxes < DEFAULT_TAXES)
     {
-        efficiency += rand() % (taxes + 50) / K_EFFICIENCY;
+        efficiency += rand() % (DEFAULT_TAXES - taxes) / K_EFFICIENCY;
         efficiency = fmin(100, efficiency);
     }
-    if (taxes > 50)
+    if (taxes > DEFAULT_TAXES)
     {
-        efficiency -= rand() % (50 - taxes) / K_EFFICIENCY;
+        efficiency -= rand() % (taxes - DEFAULT_TAXES) / K_EFFICIENCY;
         efficiency = fmax(0, efficiency);
     }
 }
