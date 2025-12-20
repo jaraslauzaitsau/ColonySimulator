@@ -18,7 +18,7 @@ Vector2 startWindowSize = windowSize;
 #define ELEMENT_SIZE_X 30 * windowSize.x / startWindowSize.x
 #define ELEMENT_SIZE_Y 30 * windowSize.y / startWindowSize.y
 #define ELEMENT_SPACING 10 * windowSize.y / startWindowSize.y
-#define SLIDER_WIDTH (windowSize.x - 270) * windowSize.x / startWindowSize.x
+#define SLIDER_WIDTH (startWindowSize.x - 270) * windowSize.x / startWindowSize.x
 #define BUTTON_WIDTH ELEMENT_SIZE_X * 10
 
 bool isSettings = false;
@@ -36,13 +36,15 @@ void DrawCheckBox(const char* text, bool* value)
 void DrawSliderInt(const char* leftText, const char* rightText, int* value, float minValue,
                    float maxValue)
 {
+    float fontSize = 24;
+    float sliderHeight = fontSize + 7;
     float valueFloat = *value;
-    GuiSlider({UI_SPACING * 2, nextElementPositionY, SLIDER_WIDTH, ELEMENT_SIZE_Y}, leftText,
+    GuiSlider({UI_SPACING * 2, nextElementPositionY, SLIDER_WIDTH, sliderHeight}, leftText,
               rightText, &valueFloat, minValue, maxValue);
     *value = valueFloat;
     DrawText(std::to_string(*value).c_str(), (SLIDER_WIDTH + UI_SPACING * 2) / 2.f,
-             nextElementPositionY + 5, 24, WHITE);
-    nextElementPositionY += ELEMENT_SIZE_Y + ELEMENT_SPACING;
+             nextElementPositionY + 5, fontSize, WHITE);
+    nextElementPositionY += sliderHeight + ELEMENT_SPACING;
 }
 
 void DrawTextCentered(const char* text, int fontSize)
