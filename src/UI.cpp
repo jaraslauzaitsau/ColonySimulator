@@ -68,7 +68,7 @@ void EditIsland()
     DrawSliderInt("", "Podatki", &island.taxes, 0, 100);
 }
 
-void DrawUI()
+void DrawGameUI()
 {
     if (showFPS) DrawFPS(0, 0);
 

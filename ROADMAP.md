@@ -44,6 +44,9 @@ Every island that hasn't been colonized yet has a lock icon in the middle of it 
 
 - [x] Each island has taxes. If the taxes are too high, people stop bringing resources. If the taxes are low, the extraction efficiency increases
 - [ ] Population grows with time
+- [ ] Main menu
+- [ ] Progress saving/loading
+- [ ] More settings
 
 ### v1.2.0
 

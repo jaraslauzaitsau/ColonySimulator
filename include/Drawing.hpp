@@ -8,6 +8,9 @@
 
 extern Vector2 windowSize;
 
+Vector2 RaylibToGlsl(Vector2 v);
+Vector2 GlslToRaylib(Vector2 v);
+
 void InitGPU();
 void DrawFrame();
 void FreeResources();
