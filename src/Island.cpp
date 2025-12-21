@@ -35,6 +35,7 @@ void Island::Colonize()
 
 void Island::SendPeople(int count)
 {
+    if (peopleCount + count > peopleMax) return;
     int maxPeopleIslandId = (&islands[0] == this ? 1 : 0);
     for (size_t i = 0; i < islands.size(); i++)
     {
@@ -51,6 +52,16 @@ void Island::GrowthTick()
     if (!colonized) return;
     woodCount += woodGrowth;
     woodCount = fmin(woodCount, woodMax);
+    if (peopleCount >= 2)
+    {
+        addPeopleFraction += peopleGrowth * sqrt(peopleCount) * efficiency / 100;
+
+        int delta = addPeopleFraction;
+        delta = fmin(delta, peopleMax - peopleCount);
+        addPeopleFraction -= delta;
+        peopleCount += delta;
+        peopleTotal += delta;
+    }
     {
         int delta = fmin(woodCount, K_WOOD_GET * peopleCount * taxes / 100 * efficiency / 100);
         woodCount -= delta;
@@ -147,7 +158,7 @@ void BuildIslands(std::atomic<bool>& finished, float stepSize)
         float cost = distance * area;
         islands.emplace_back(corner.first, corner.second, area, cost * K_WOOD_COLONIZE,
                              cost * K_IRON_COLONIZE, cost * K_WOOD, cost * K_WOOD_GROWTH,
-                             cost * K_IRON);
+                             cost * K_IRON, cost * K_PEOPLE_GROWTH, cost * K_PEOPLE_MAX);
         passed++;
     }
     std::cout << "Found " << passed << " large enough islands\n";
