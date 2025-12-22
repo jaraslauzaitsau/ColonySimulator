@@ -56,6 +56,7 @@ Every island that hasn't been colonized yet has a lock icon in the middle of it 
 
 - [ ] Ships flowing through the sea to the target island
 - [ ] Animated people walking
+- [ ] Translations
 
 ### Joke features (probably not worth implementing)
 

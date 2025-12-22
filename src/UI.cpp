@@ -165,7 +165,7 @@ void EditIsland()
     }
 
     auto& island = islands[islandEditIdx];
-    DrawSliderInt("", "Podatki", &island.taxes, 0, 100);
+    DrawSliderInt("", "Taxes", &island.taxes, 0, 100);
 }
 
 void DrawGameUI()

@@ -27,18 +27,6 @@ if [ "$1" == "-w" ] || [ "$1" == "--windows" ]; then
     wine ./build_windows/bin/$executable_name.exe
 fi
 
-# Web build
-if [ "$1" == "--web" ]; then
-    clear
-    if [ "$2" == "-m" ] || [ "$2" == "--minimal" ]; then
-        emcmake cmake -B build_web -DPLATFORM=Web -DSHELL=Minimal
-    else
-        emcmake cmake -B build_web -DPLATFORM=Web -DSHELL=Full
-    fi
-    cmake --build build_web -j$(nproc)
-    emrun ./build_web/bin/index.html
-fi
-
 # Help info
 if [ "$1" == "--help" ]; then
     echo "Usage: ./run.sh [OPTION]..."
@@ -48,5 +36,4 @@ if [ "$1" == "--help" ]; then
     echo ""
     echo "-d, --debug      Compile the debug build and run it with gdb"
     echo "-w, --windows    Compile the Windows build and run it with Wine"
-    echo "--web            Compile the web build and run it with emrun"
 fi

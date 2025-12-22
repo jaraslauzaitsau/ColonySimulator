@@ -180,9 +180,7 @@ void UpdateDynamicShaderValues()
                    SHADER_UNIFORM_VEC2);
     SetShaderValue(islandShader, GetShaderLocation(islandShader, "uResolution"),
                    (float*)&windowSize, SHADER_UNIFORM_VEC2);
-#if !defined(PLATFORM_WEB)
     windowSize /= GetWindowScaleDPI();
-#endif
 
     SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uOffset"), (float*)&perlinOffset,
                    SHADER_UNIFORM_VEC2);

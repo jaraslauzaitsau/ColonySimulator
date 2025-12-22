@@ -49,9 +49,7 @@ Vector2 GlslToRaylib(Vector2 v)
 void UpdateWindowSize()
 {
     windowSize = {(float)GetRenderWidth(), (float)GetRenderHeight()};
-#if !defined(PLATFORM_WEB)
     windowSize /= GetWindowScaleDPI();
-#endif
 }
 
 void ReloadIslandShaderValues()
