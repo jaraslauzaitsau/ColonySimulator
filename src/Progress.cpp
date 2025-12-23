@@ -7,6 +7,7 @@
 #include "Drawing.hpp"
 #include "Perlin.hpp"
 #include <ctime>
+#include <filesystem>
 
 std::vector<SaveSlot> saveSlots(MAX_SAVE_SLOTS);
 int currentSlot = -1;
@@ -93,6 +94,12 @@ void SaveProgress()
 
 void LoadProgress()
 {
+    if (!std::filesystem::exists("saves.json"))
+    {
+        SaveProgress();
+        return;
+    }
+
     JSON json = JSON::Load("saves.json");
 
     // The version isn't needed yet
