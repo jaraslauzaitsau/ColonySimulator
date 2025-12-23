@@ -23,8 +23,8 @@ struct Biome
 #define K_WOOD_GROWTH 0.002f
 #define K_IRON 0.005f
 #define K_PEOPLE 0.001f
-#define K_PEOPLE_GROWTH 0.00003f
-#define K_PEOPLE_MAX 0.005f
+#define K_PEOPLE_GROWTH 0.001f
+#define K_PEOPLE_MAX 0.1f
 
 #define GROWTH_PERIOD 1
 #define K_WOOD_GET 3

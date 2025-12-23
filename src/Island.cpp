@@ -212,7 +212,7 @@ void BuildIslands(std::atomic<bool>& finished, float stepSize)
         float cost = distance * area;
         islands.emplace_back(corner.first, corner.second, area, cost * K_WOOD_COLONIZE,
                              cost * K_IRON_COLONIZE, cost * K_WOOD, cost * K_WOOD_GROWTH,
-                             cost * K_IRON, cost * K_PEOPLE_GROWTH, cost * K_PEOPLE_MAX);
+                             cost * K_IRON, area * K_PEOPLE_GROWTH, area * K_PEOPLE_MAX);
         passed++;
     }
     std::cout << "Found " << passed << " large enough islands\n";
@@ -230,11 +230,12 @@ void BuildIslands(std::atomic<bool>& finished, float stepSize)
 
     // Set start resources
     auto& startIsland = islands[minDistanceIslandIdx];
-    float distance = Vector2Distance(Vector2{0, 0}, (startIsland.p1 + startIsland.p2) / 2);
-    float cost = distance * startIsland.area;
-    peopleTotal = cost * K_PEOPLE;
+    peopleTotal = startIsland.area * K_PEOPLE;
     peopleTotal = fmax(2, peopleTotal);
     startIsland.peopleCount = peopleTotal;
+
+    // Prevent softlocking by having enough people to extract iron and enough iron to colonize
+    startIsland.peopleMax = fmax(3, startIsland.peopleMax);
     startIsland.ironCount *= 3;
 
     finished = true;
