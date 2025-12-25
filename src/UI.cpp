@@ -8,7 +8,6 @@
 #include "Progress.hpp"
 #include "Settings.hpp"
 #include "UI.hpp"
-#include <iostream>
 #include <raygui.h>
 #include <string>
 
@@ -206,8 +205,7 @@ void DrawMainUI()
     nextElementPositionY += (ELEMENT_SIZE + ELEMENT_SPACING) * 2 * windowSize.y / startWindowSize.y;
     if (DrawButtonCentered("Play")) isLoadMap = true;
     if (DrawButtonCentered("Settings")) isSettings = !isSettings;
-    if (DrawButtonCentered("About")) std::cout << "[TODO]: Add an about menu\n";
-    if (DrawButtonCentered("Exit")) exitRequested = true;
+    if (DrawButtonCentered("Exit")) CloseWindow();
 
     if (isSettings) DrawSettings();
     if (isLoadMap) DrawLoadMap();

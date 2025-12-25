@@ -6,8 +6,6 @@
 
 #include <raylib.h>
 
-extern bool exitRequested;
-
 enum class Menu
 {
     Main,
