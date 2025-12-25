@@ -6,6 +6,8 @@
 
 #include <raylib.h>
 
+extern bool shouldClose;
+
 enum class Menu
 {
     Main,

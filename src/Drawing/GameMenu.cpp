@@ -224,15 +224,19 @@ void DrawGameMenu()
 
 void ProcessPlayerInput(double deltaTime)
 {
-    if (IsKeyDown(KEY_UP)) perlinOffset.y += panSensitivity * perlinScale * deltaTime;
-    if (IsKeyDown(KEY_DOWN)) perlinOffset.y -= panSensitivity * perlinScale * deltaTime;
-    if (IsKeyDown(KEY_LEFT)) perlinOffset.x -= panSensitivity * perlinScale * deltaTime;
-    if (IsKeyDown(KEY_RIGHT)) perlinOffset.x += panSensitivity * perlinScale * deltaTime;
+    if (IsKeyDown(KEY_UP) || IsKeyDown(KEY_W))
+        perlinOffset.y += panSensitivity * perlinScale * deltaTime;
+    if (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))
+        perlinOffset.y -= panSensitivity * perlinScale * deltaTime;
+    if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A))
+        perlinOffset.x -= panSensitivity * perlinScale * deltaTime;
+    if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
+        perlinOffset.x += panSensitivity * perlinScale * deltaTime;
 
-    if (IsKeyDown(KEY_W)) perlinOffset.y += panSensitivity * perlinScale * deltaTime;
-    if (IsKeyDown(KEY_S)) perlinOffset.y -= panSensitivity * perlinScale * deltaTime;
-    if (IsKeyDown(KEY_A)) perlinOffset.x -= panSensitivity * perlinScale * deltaTime;
-    if (IsKeyDown(KEY_D)) perlinOffset.x += panSensitivity * perlinScale * deltaTime;
+    if (!IsWindowFocused() || IsWindowHidden())
+    {
+        currentMenu = Menu::Pause;
+    }
 
     if (IsKeyPressed(KEY_ESCAPE))
     {
@@ -252,7 +256,8 @@ void ProcessPlayerInput(double deltaTime)
         mousePressedStart = GetMousePosition();
     }
 
-    if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && Vector2Distance(GetMousePosition(), mousePressedStart) == 0)
+    if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) &&
+        Vector2Distance(GetMousePosition(), mousePressedStart) == 0)
     {
         std::cout << "Mouse pressed!\n";
         Vector2 v = RaylibToGlsl(GetMousePosition());

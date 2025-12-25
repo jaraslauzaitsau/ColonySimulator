@@ -12,6 +12,8 @@
 #include <ctime>
 #include <raygui.h>
 
+bool shouldClose = false;
+
 Menu currentMenu = Menu::Main;
 
 Vector2 windowSize{16 * 50, 9 * 50};
@@ -110,6 +112,15 @@ void InitGPU()
 
 void DrawFrame()
 {
+    if (IsWindowMinimized())
+    {
+        if (currentMenu == Menu::Game) currentMenu = Menu::Pause;
+
+        PollInputEvents();
+        WaitTime(0.1);
+        return;
+    }
+
     BeginDrawing();
 
     ClearBackground(BLACK);
