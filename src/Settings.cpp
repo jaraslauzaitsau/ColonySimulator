@@ -8,7 +8,6 @@
 
 bool vsync = true;
 bool showFPS = true;
-float perlinScale = 0.1;
 float panSensitivity = 500;
 float wheelSensitivity = 0.3f;
 Vector2 mapSize = {300, 300};
@@ -36,7 +35,6 @@ void Save()
     std::ofstream file("settings.txt");
     file << "vsync=" << (vsync ? "true" : "false") << '\n';
     file << "show-fps=" << (showFPS ? "true" : "false") << '\n';
-    file << "perlin-scale=" << perlinScale << '\n';
     file << "map-size-x=" << mapSize.x << '\n';
     file << "map-size-y=" << mapSize.y << '\n';
     file << "pan-sensitivity=" << panSensitivity << '\n';
@@ -54,7 +52,6 @@ void Load()
         value = Split(buf, '=')[1];
         if (label == "vsync") vsync = value == "true";
         if (label == "show-fps") showFPS = value == "true";
-        if (label == "perlin-scale") perlinScale = stof(value);
         if (label == "map-size-x") mapSize.x = stof(value);
         if (label == "map-size-y") mapSize.y = stof(value);
         if (label == "pan-sensitivity") panSensitivity = stof(value);

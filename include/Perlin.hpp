@@ -9,4 +9,5 @@
 float GetPerlin(Vector2 v);
 
 extern int perlinSeed;
+extern float perlinScale;
 extern Vector2 perlinOffset;

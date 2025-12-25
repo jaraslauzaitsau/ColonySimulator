@@ -8,7 +8,6 @@
 
 extern bool vsync;
 extern bool showFPS;
-extern float perlinScale;
 extern float panSensitivity;
 extern float wheelSensitivity;
 extern Vector2 mapSize;

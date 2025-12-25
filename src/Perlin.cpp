@@ -5,6 +5,7 @@
 #include "Perlin.hpp"
 
 int perlinSeed = 0;
+float perlinScale = 0.12f;
 Vector2 perlinOffset = {0, 0};
 
 float Fract(float x) { return x - floorf(x); }
