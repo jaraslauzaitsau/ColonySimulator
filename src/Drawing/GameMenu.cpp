@@ -13,11 +13,10 @@
 #include <raygui.h>
 
 double growthTimer = 0;
+Vector2 lastMousePosition = GetMousePosition();
+Vector2 mousePressedStart = GetMousePosition();
 
-void OpenGameMenu()
-{
-    currentMenu = Menu::Game;
-}
+void OpenGameMenu() { currentMenu = Menu::Game; }
 
 void DrawStats(int islandIdx)
 {
@@ -159,14 +158,6 @@ void DrawResources()
     offset.y += humanTexture.height * humanScale + margin;
 }
 
-void GrowthTick()
-{
-    for (auto& island: islands)
-    {
-        island.GrowthTick();
-    }
-}
-
 void UpdateDynamicShaderValues()
 {
     float scale = perlinScale;
@@ -238,6 +229,11 @@ void ProcessPlayerInput(double deltaTime)
     if (IsKeyDown(KEY_LEFT)) perlinOffset.x -= panSensitivity * perlinScale * deltaTime;
     if (IsKeyDown(KEY_RIGHT)) perlinOffset.x += panSensitivity * perlinScale * deltaTime;
 
+    if (IsKeyDown(KEY_W)) perlinOffset.y += panSensitivity * perlinScale * deltaTime;
+    if (IsKeyDown(KEY_S)) perlinOffset.y -= panSensitivity * perlinScale * deltaTime;
+    if (IsKeyDown(KEY_A)) perlinOffset.x -= panSensitivity * perlinScale * deltaTime;
+    if (IsKeyDown(KEY_D)) perlinOffset.x += panSensitivity * perlinScale * deltaTime;
+
     if (IsKeyPressed(KEY_ESCAPE))
     {
         if (isSettings)
@@ -252,6 +248,11 @@ void ProcessPlayerInput(double deltaTime)
     perlinScale = std::max(0.0f, perlinScale);
 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    {
+        mousePressedStart = GetMousePosition();
+    }
+
+    if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON) && Vector2Distance(GetMousePosition(), mousePressedStart) == 0)
     {
         std::cout << "Mouse pressed!\n";
         Vector2 v = RaylibToGlsl(GetMousePosition());
@@ -273,9 +274,21 @@ void ProcessPlayerInput(double deltaTime)
         }
     }
 
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+    {
+        Vector2 delta = GetMousePosition() - lastMousePosition;
+        delta.y *= -1;
+        perlinOffset -= delta * perlinScale * GetWindowScaleDPI();
+    }
+
     if (GetTime() - growthTimer > GROWTH_PERIOD)
     {
         growthTimer = GetTime();
-        GrowthTick();
+        for (auto& island: islands)
+        {
+            island.GrowthTick();
+        }
     }
+
+    lastMousePosition = GetMousePosition();
 }

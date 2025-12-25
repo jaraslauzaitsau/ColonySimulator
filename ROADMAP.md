@@ -48,8 +48,8 @@ Every island that hasn't been colonized yet has a lock icon in the middle of it 
 - [x] Progress saving/loading
 - [x] More settings
 - [x] Map loading progress bar
-- [ ] Panning with the mouse
-- [ ] Panning with WASD
+- [x] Panning with the mouse
+- [x] Panning with WASD
 - [x] Pause menu
 
 ### v1.2.0
