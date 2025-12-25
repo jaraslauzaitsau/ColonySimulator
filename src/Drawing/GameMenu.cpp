@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-only
 
-#include "Drawing/GameMenu.hpp"
 #include "Drawing.hpp"
+#include "Drawing/GameMenu.hpp"
 #include "Island.hpp"
 #include "Perlin.hpp"
 #include "Settings.hpp"
@@ -233,7 +233,12 @@ void ProcessPlayerInput(double deltaTime)
     if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
         perlinOffset.x += panSensitivity * perlinScale * deltaTime;
 
-    if (IsKeyPressed(KEY_ESCAPE) || !IsWindowFocused() || IsWindowMinimized() || IsWindowHidden())
+    if (!IsWindowFocused() || IsWindowHidden())
+    {
+        currentMenu = Menu::Pause;
+    }
+
+    if (IsKeyPressed(KEY_ESCAPE))
     {
         if (isSettings)
             isSettings = false;

@@ -110,6 +110,15 @@ void InitGPU()
 
 void DrawFrame()
 {
+    if (IsWindowMinimized())
+    {
+        if (currentMenu == Menu::Game) currentMenu = Menu::Pause;
+
+        PollInputEvents();
+        WaitTime(0.1);
+        return;
+    }
+
     BeginDrawing();
 
     ClearBackground(BLACK);
