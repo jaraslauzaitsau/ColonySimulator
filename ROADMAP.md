@@ -46,7 +46,7 @@ Every island that hasn't been colonized yet has a lock icon in the middle of it 
 - [x] Population grows with time
 - [x] Main menu
 - [x] Progress saving/loading
-- [ ] More settings
+- [x] More settings
 - [x] Map loading progress bar
 - [ ] Panning with the mouse
 - [ ] Panning with WASD

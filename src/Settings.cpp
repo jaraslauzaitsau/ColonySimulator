@@ -37,8 +37,10 @@ void Save()
     file << "vsync=" << (vsync ? "true" : "false") << '\n';
     file << "show-fps=" << (showFPS ? "true" : "false") << '\n';
     file << "perlin-scale=" << perlinScale << '\n';
-    file << "mapSizeX=" << mapSize.x << '\n';
-    file << "mapSizeY=" << mapSize.y << '\n';
+    file << "map-size-x=" << mapSize.x << '\n';
+    file << "map-size-y=" << mapSize.y << '\n';
+    file << "pan-sensitivity=" << panSensitivity << '\n';
+    file << "wheel-sensitivity=" << wheelSensitivity << '\n';
     file.close();
 }
 
@@ -53,8 +55,10 @@ void Load()
         if (label == "vsync") vsync = value == "true";
         if (label == "show-fps") showFPS = value == "true";
         if (label == "perlin-scale") perlinScale = stof(value);
-        if (label == "mapSizeX") mapSize.x = stof(value);
-        if (label == "mapSizeY") mapSize.y = stof(value);
+        if (label == "map-size-x") mapSize.x = stof(value);
+        if (label == "map-size-y") mapSize.y = stof(value);
+        if (label == "pan-sensitivity") panSensitivity = stof(value);
+        if (label == "wheel-sensitivity") wheelSensitivity = stof(value);
     }
     file.close();
 }

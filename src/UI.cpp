@@ -18,9 +18,10 @@ Vector2 startWindowSize = windowSize;
 #define UI_SPACING 30
 #define ELEMENT_SIZE 30
 #define ELEMENT_SPACING 10
-#define SLIDER_WIDTH windowSize.x - 270
+#define SLIDER_TEXT_WIDTH 150
+#define SLIDER_WIDTH (windowSize.x - UI_SPACING * 4 - SLIDER_TEXT_WIDTH)
 #define BUTTON_WIDTH ELEMENT_SIZE * 10 * windowSize.x / startWindowSize.x
-#define BUTTON_SIZE ELEMENT_SIZE * windowSize.x / startWindowSize.x
+#define BUTTON_SIZE ELEMENT_SIZE* windowSize.x / startWindowSize.x
 #define FONT_SIZE 24 * windowSize.y / startWindowSize.y
 
 bool isSettings = false;
@@ -36,6 +37,16 @@ void DrawCheckBox(const char* text, bool* value)
 {
     GuiCheckBox(Rectangle{UI_SPACING * 2, nextElementPositionY, ELEMENT_SIZE, ELEMENT_SIZE}, text,
                 value);
+    nextElementPositionY += ELEMENT_SIZE + ELEMENT_SPACING;
+}
+
+void DrawSlider(const char* leftText, const char* rightText, float* value, float minValue,
+                float maxValue)
+{
+    GuiSlider({UI_SPACING * 2, nextElementPositionY, SLIDER_WIDTH, ELEMENT_SIZE}, leftText,
+              rightText, value, minValue, maxValue);
+    DrawText(std::to_string(*value).c_str(), (SLIDER_WIDTH + UI_SPACING * 2) / 2.f,
+             nextElementPositionY + 5, ELEMENT_SIZE - 5, WHITE);
     nextElementPositionY += ELEMENT_SIZE + ELEMENT_SPACING;
 }
 
@@ -77,6 +88,8 @@ void DrawSettings()
     nextElementPositionY = rec.y + UI_SPACING;
     DrawCheckBox("vsync", &vsync);
     DrawCheckBox("show-fps", &showFPS);
+    DrawSlider("", "pan-sensitivity", &panSensitivity, 100, 1000);
+    DrawSlider("", "wheel-sensitivity", &wheelSensitivity, 0.05f, 10);
 
     {
         auto buttonRec = rec;
@@ -137,8 +150,7 @@ void DrawLoadMap()
     {
         int res = GuiMessageBox(
             rec, "Warning",
-            ("Are you sure you want to empty " + saveSlots[slotToEmpty].name + "?")
-                .c_str(),
+            ("Are you sure you want to empty " + saveSlots[slotToEmpty].name + "?").c_str(),
             "Yes;No");
         if (res >= 0)
         {
