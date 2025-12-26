@@ -1,4 +1,3 @@
-// SPDX-FileCopyrightText: 2025 Jaraslau Zaitsau
 // SPDX-FileCopyrightText: 2025 SemkiShow
 //
 // SPDX-License-Identifier: GPL-3.0-only
