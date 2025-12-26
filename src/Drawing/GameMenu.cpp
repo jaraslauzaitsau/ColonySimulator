@@ -5,6 +5,7 @@
 
 #include "Drawing.hpp"
 #include "Drawing/GameMenu.hpp"
+#include "Human.hpp"
 #include "Island.hpp"
 #include "Perlin.hpp"
 #include "Settings.hpp"
@@ -194,6 +195,17 @@ void DrawGameMenu()
     BeginShaderMode(biomeShader);
     DrawRectangle(0, 0, windowSize.x, windowSize.y, WHITE);
     EndShaderMode();
+
+    for (auto& human: people)
+    {
+        human.MoveToTarget(GetFrameTime());
+        float scale = 0.0005f / perlinScale;
+        Vector2 pos = GlslToRaylib(human.pos);
+        DrawTexturePro(humanTexture, {0, 0, humanTexture.width * 1.0f, humanTexture.height * 1.0f},
+                       {pos.x, pos.y, humanTexture.width * scale, humanTexture.height * scale},
+                       {humanTexture.width * scale / 2.0f, humanTexture.height * scale},
+                       human.angle, WHITE);
+    }
 
     if (showIslandsBoxes)
     {

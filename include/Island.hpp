@@ -17,19 +17,7 @@ struct Biome
     Biome(float startLevel, const Color& color) : startLevel(startLevel), color(color) {}
 };
 
-#define K_WOOD_COLONIZE 0.05f
-#define K_IRON_COLONIZE 0.004f
-#define K_WOOD 0.02f
-#define K_WOOD_GROWTH 0.002f
-#define K_IRON 0.005f
-#define K_PEOPLE 0.001f
-#define K_PEOPLE_GROWTH 0.001f
-#define K_PEOPLE_MAX 0.1f
-
 #define GROWTH_PERIOD 1
-#define K_WOOD_GET 3
-#define K_IRON_GET 1
-#define K_EFFICIENCY 5
 #define DEFAULT_TAXES 67
 
 struct Island
@@ -41,6 +29,7 @@ struct Island
     float peopleGrowth = 0, addPeopleFraction = 0;
     bool colonized = false;
     int taxes = DEFAULT_TAXES, efficiency = 50;
+    int index = -1;
 
     Island() = default;
     Island(Vector2 p1, Vector2 p2, float area, int woodColonize, int ironColonize, int woodCount,
@@ -52,6 +41,7 @@ struct Island
         woodMax = woodCount;
     }
 
+    Vector2 GetRandomPoint();
     void Colonize();
     void SendPeople(int count);
     void GrowthTick();
@@ -62,6 +52,8 @@ struct Island
 
 extern std::vector<Biome> biomes;
 extern std::vector<Island> islands;
+
+#define LAND_START biomes[3].startLevel
 
 extern int woodTotal;
 extern int ironTotal;

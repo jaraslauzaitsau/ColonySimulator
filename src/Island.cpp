@@ -4,15 +4,30 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
 #include "Drawing.hpp"
+#include "Human.hpp"
 #include "Island.hpp"
 #include "Perlin.hpp"
 #include "Settings.hpp"
+#include "Utils.hpp"
 #include <cfloat>
 #include <climits>
 #include <iostream>
 #include <raygui.h>
 #include <thread>
 #include <unordered_map>
+
+#define K_WOOD_COLONIZE 0.05f
+#define K_IRON_COLONIZE 0.004f
+#define K_WOOD 0.02f
+#define K_WOOD_GROWTH 0.002f
+#define K_IRON 0.005f
+#define K_PEOPLE 0.001f
+#define K_PEOPLE_GROWTH 0.001f
+#define K_PEOPLE_MAX 0.1f
+
+#define K_WOOD_GET 3
+#define K_IRON_GET 1
+#define K_EFFICIENCY 5
 
 inline Color rgb(unsigned char r, unsigned char g, unsigned char b) { return {r, g, b, 255}; }
 
@@ -23,6 +38,17 @@ std::vector<Biome> biomes = {{-1, rgb(0, 0, 255)},     {-0.5, rgb(0, 136, 255)},
 std::vector<Island> islands;
 
 int woodTotal = 0, ironTotal = 0, peopleTotal = 0;
+
+Vector2 Island::GetRandomPoint()
+{
+    Vector2 pos;
+    do
+    {
+        pos.x = GetRandomFloat(p1.x, p2.x);
+        pos.y = GetRandomFloat(p1.y, p2.y);
+    } while (GetPerlin(pos) < LAND_START);
+    return pos;
+}
 
 void Island::Colonize()
 {
@@ -45,6 +71,16 @@ void Island::SendPeople(int count)
     if (islands[maxPeopleIslandId].peopleCount < count) return;
     islands[maxPeopleIslandId].peopleCount -= count;
     peopleCount += count;
+
+    int counter = 0;
+    for (auto& human: people)
+    {
+        if (counter >= count) break;
+        if (human.islandIdx != maxPeopleIslandId) continue;
+        human.islandIdx = index;
+        human.pos = GetRandomPoint();
+        counter++;
+    }
 }
 
 void Island::GrowthTick()
@@ -61,6 +97,10 @@ void Island::GrowthTick()
         addPeopleFraction -= delta;
         peopleCount += delta;
         peopleTotal += delta;
+        for (int i = 0; i < delta; i++)
+        {
+            people.emplace_back(GetRandomPoint(), index);
+        }
     }
     {
         int delta = fmin(woodCount, K_WOOD_GET * peopleCount * taxes / 100 * efficiency / 100);
@@ -86,7 +126,7 @@ void Island::GrowthTick()
 
 JSON Island::ToJSON()
 {
-    JSON json = JSON::array_t{};
+    JSON json;
 
     json["p1"].format = JSONFormat::Inline;
     json["p1"].push_back(p1.x);
@@ -138,7 +178,6 @@ Island Island::LoadJSON(JSON& json)
     return island;
 }
 
-#define LAND_START biomes[3].startLevel
 float loadingPercent = 0;
 
 void BuildIslands(std::atomic<bool>& finished, float stepSize)
@@ -233,6 +272,10 @@ void BuildIslands(std::atomic<bool>& finished, float stepSize)
     peopleTotal = startIsland.area * K_PEOPLE;
     peopleTotal = fmax(2, peopleTotal);
     startIsland.peopleCount = peopleTotal;
+    for (int i = 0; i < startIsland.peopleCount; i++)
+    {
+        people.emplace_back(startIsland.GetRandomPoint(), minDistanceIslandIdx);
+    }
 
     // Prevent softlocking by having enough people to extract iron and enough iron to colonize
     startIsland.peopleMax = fmax(3, startIsland.peopleMax);

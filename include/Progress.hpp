@@ -5,6 +5,8 @@
 #pragma once
 
 #include "Island.hpp"
+
+#include "Human.hpp"
 #include "JSON.hpp"
 #include <vector>
 
@@ -15,7 +17,8 @@ struct SaveSlot
     int seed = -1;
     std::string name = "Empty slot";
     std::vector<Island> islands;
-    int woodTotal, ironTotal, peopleTotal;
+    std::vector<Human> people;
+    int woodTotal = 0, ironTotal = 0, peopleTotal = 0;
 
     JSON ToJSON();
     void LoadJSON(JSON& json);

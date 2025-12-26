@@ -5,6 +5,7 @@
 #include "Progress.hpp"
 
 #include "Drawing.hpp"
+#include "Human.hpp"
 #include "Perlin.hpp"
 #include <ctime>
 #include <filesystem>
@@ -22,6 +23,10 @@ JSON SaveSlot::ToJSON()
     {
         json["islands"].push_back(island.ToJSON());
     }
+    for (auto& human: this->people)
+    {
+        json["people"].push_back(human.ToJSON());
+    }
     json["woodTotal"] = this->woodTotal;
     json["ironTotal"] = this->ironTotal;
     json["peopleTotal"] = this->peopleTotal;
@@ -37,6 +42,12 @@ void SaveSlot::LoadJSON(JSON& json)
     for (size_t i = 0; i < json["islands"].size(); i++)
     {
         this->islands.push_back(Island::LoadJSON(json["islands"][i]));
+        this->islands.back().index = i;
+    }
+    this->people.clear();
+    for (size_t i = 0; i < json["people"].size(); i++)
+    {
+        this->people.push_back(Human::LoadJSON(json["people"][i]));
     }
     this->woodTotal = json["woodTotal"].GetInt();
     this->ironTotal = json["ironTotal"].GetInt();
@@ -48,6 +59,7 @@ void SaveToSlot(int idx)
     if (idx < 0) return;
     saveSlots[idx].seed = perlinSeed;
     saveSlots[idx].islands = islands;
+    saveSlots[idx].people = people;
     saveSlots[idx].woodTotal = woodTotal;
     saveSlots[idx].ironTotal = ironTotal;
     saveSlots[idx].peopleTotal = peopleTotal;
@@ -66,6 +78,7 @@ void LoadFromSlot(int idx)
 
     perlinSeed = saveSlots[idx].seed;
     islands = saveSlots[idx].islands;
+    people = saveSlots[idx].people;
     woodTotal = saveSlots[idx].woodTotal;
     ironTotal = saveSlots[idx].ironTotal;
     peopleTotal = saveSlots[idx].peopleTotal;
@@ -82,7 +95,7 @@ void SaveProgress()
 
     JSON json;
 
-    json["version"] = 0;
+    json["version"] = 1;
 
     for (size_t i = 0; i < MAX_SAVE_SLOTS; i++)
     {
@@ -90,6 +103,25 @@ void SaveProgress()
     }
 
     json.Save("saves.json");
+}
+
+void MigrateV0()
+{
+    int lastPerlinSeed = perlinSeed;
+    for (auto& slot: saveSlots)
+    {
+        perlinSeed = slot.seed;
+        for (size_t i = 0; i < slot.islands.size(); i++)
+        {
+            auto& island = slot.islands[i];
+            if (!island.colonized) continue;
+            for (int j = 0; j < island.peopleCount; j++)
+            {
+                slot.people.emplace_back(island.GetRandomPoint(), i);
+            }
+        }
+    }
+    perlinSeed = lastPerlinSeed;
 }
 
 void LoadProgress()
@@ -102,11 +134,16 @@ void LoadProgress()
 
     JSON json = JSON::Load("saves.json");
 
-    // The version isn't needed yet
-    // int version = json["version"].GetInt();
+    int version = json["version"].GetInt();
 
     for (size_t i = 0; i < json["saves"].size(); i++)
     {
         saveSlots[i].LoadJSON(json["saves"][i]);
+    }
+
+    if (version == 0)
+    {
+        MigrateV0();
+        version = 1;
     }
 }
