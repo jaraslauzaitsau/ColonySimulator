@@ -58,7 +58,7 @@ Every island that hasn't been colonized yet has a lock icon in the middle of it 
 - [x] Animated people walking
 - [ ] Translations
 - [ ] Approximate island shapes more accurately, than a rectangle
-- [ ] World customization on creation (slot name, seed, map size, etc.)
+- [x] World customization on creation (slot name, seed, map size, etc.)
 
 ### Joke features (probably not worth implementing)
 

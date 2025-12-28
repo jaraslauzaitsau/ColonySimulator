@@ -7,6 +7,7 @@
 #include "Drawing.hpp"
 #include "Human.hpp"
 #include "Perlin.hpp"
+#include "Settings.hpp"
 #include <ctime>
 #include <filesystem>
 
@@ -31,6 +32,10 @@ JSON SaveSlot::ToJSON()
     json["ironTotal"] = this->ironTotal;
     json["peopleTotal"] = this->peopleTotal;
 
+    json["mapSize"].format = JSONFormat::Inline;
+    json["mapSize"].push_back(this->mapSize.x);
+    json["mapSize"].push_back(this->mapSize.y);
+
     return json;
 }
 
@@ -52,6 +57,8 @@ void SaveSlot::LoadJSON(JSON& json)
     this->woodTotal = json["woodTotal"].GetInt();
     this->ironTotal = json["ironTotal"].GetInt();
     this->peopleTotal = json["peopleTotal"].GetInt();
+    this->mapSize = {static_cast<float>(json["mapSize"][0].GetDouble()),
+                     static_cast<float>(json["mapSize"][1].GetDouble())};
 }
 
 void SaveToSlot(int idx)
@@ -64,6 +71,7 @@ void SaveToSlot(int idx)
     saveSlots[idx].ironTotal = ironTotal;
     saveSlots[idx].peopleTotal = peopleTotal;
     saveSlots[idx].name = "Slot " + std::to_string(idx + 1);
+    saveSlots[idx].mapSize = mapSize;
 }
 
 void LoadFromSlot(int idx)
@@ -82,6 +90,7 @@ void LoadFromSlot(int idx)
     woodTotal = saveSlots[idx].woodTotal;
     ironTotal = saveSlots[idx].ironTotal;
     peopleTotal = saveSlots[idx].peopleTotal;
+    mapSize = saveSlots[idx].mapSize;
 
     SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uSeed"), &perlinSeed,
                    SHADER_UNIFORM_INT);
@@ -95,7 +104,7 @@ void SaveProgress()
 
     JSON json;
 
-    json["version"] = 1;
+    json["version"] = 2;
 
     for (size_t i = 0; i < MAX_SAVE_SLOTS; i++)
     {
@@ -124,6 +133,14 @@ void MigrateV0()
     perlinSeed = lastPerlinSeed;
 }
 
+void MigrateV1()
+{
+    for (auto& slot: saveSlots)
+    {
+        slot.mapSize = {300, 300};
+    }
+}
+
 void LoadProgress()
 {
     if (!std::filesystem::exists("saves.json"))
@@ -145,5 +162,10 @@ void LoadProgress()
     {
         MigrateV0();
         version = 1;
+    }
+    if (version == 1)
+    {
+        MigrateV1();
+        version = 2;
     }
 }

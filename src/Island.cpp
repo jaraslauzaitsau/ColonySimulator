@@ -287,9 +287,6 @@ void BuildIslands(std::atomic<bool>& finished, float stepSize)
 
 void BuildMap()
 {
-    // Generate a random seed
-    perlinSeed = rand();
-
     // Reset variables
     woodTotal = ironTotal = peopleTotal = 0;
 

@@ -19,6 +19,7 @@ struct SaveSlot
     std::vector<Island> islands;
     std::vector<Human> people;
     int woodTotal = 0, ironTotal = 0, peopleTotal = 0;
+    Vector2 mapSize{300, 300};
 
     JSON ToJSON();
     void LoadJSON(JSON& json);

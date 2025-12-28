@@ -35,8 +35,6 @@ void Save()
     std::ofstream file("settings.txt");
     file << "vsync=" << (vsync ? "true" : "false") << '\n';
     file << "show-fps=" << (showFPS ? "true" : "false") << '\n';
-    file << "map-size-x=" << mapSize.x << '\n';
-    file << "map-size-y=" << mapSize.y << '\n';
     file << "pan-sensitivity=" << panSensitivity << '\n';
     file << "wheel-sensitivity=" << wheelSensitivity << '\n';
     file.close();
@@ -52,8 +50,6 @@ void Load()
         value = Split(buf, '=')[1];
         if (label == "vsync") vsync = value == "true";
         if (label == "show-fps") showFPS = value == "true";
-        if (label == "map-size-x") mapSize.x = stof(value);
-        if (label == "map-size-y") mapSize.y = stof(value);
         if (label == "pan-sensitivity") panSensitivity = stof(value);
         if (label == "wheel-sensitivity") wheelSensitivity = stof(value);
     }

@@ -10,8 +10,8 @@ uniform vec2 uOffset;
 
 uniform vec2 uMouse;
 
-uniform vec2 uIslandStarts[512];
-uniform vec2 uIslandEnds[512];
+uniform vec2 uIslandStarts[2048];
+uniform vec2 uIslandEnds[2048];
 uniform int uIslandsCount;
 
 bool inside(vec2 v, int i)

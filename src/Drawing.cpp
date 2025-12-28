@@ -61,7 +61,7 @@ void ReloadIslandShaderValues()
     SetShaderValue(islandShader, GetShaderLocation(islandShader, "uIslandsCount"), &islandsCount,
                    SHADER_UNIFORM_INT);
 
-    Vector2 islandStarts[512], islandEnds[512];
+    Vector2 islandStarts[2048], islandEnds[2048];
     for (size_t i = 0; i < islands.size(); i++)
     {
         islandStarts[i] = islands[i].p1;

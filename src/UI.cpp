@@ -6,6 +6,7 @@
 #include "Drawing.hpp"
 #include "Drawing/GameMenu.hpp"
 #include "Island.hpp"
+#include "Perlin.hpp"
 #include "Progress.hpp"
 #include "Settings.hpp"
 #include "UI.hpp"
@@ -23,15 +24,23 @@ Vector2 startWindowSize = windowSize;
 #define BUTTON_WIDTH ELEMENT_SIZE * 10 * windowSize.x / startWindowSize.x
 #define BUTTON_SIZE ELEMENT_SIZE* windowSize.x / startWindowSize.x
 #define FONT_SIZE 24 * windowSize.y / startWindowSize.y
+#define TEXT_OFFSET 5
+#define BUTTON_SPACING ELEMENT_SPACING * 3
+
+float nextElementPositionY = UI_SPACING * 2;
 
 bool isSettings = false;
 bool isLoadMap = false;
 bool isEmptySlot = false;
-int slotToEmpty = -1;
+bool isNewWorld = false;
 bool isSaveGame = false;
-int islandEditIdx = -1;
 
-float nextElementPositionY = UI_SPACING * 2;
+int slotToEmpty = -1;
+int newMapSlot = -1;
+int slotSeed = -1;
+bool squareMap = true;
+Vector2 slotMapSize{300, 300};
+int islandEditIdx = -1;
 
 void DrawCheckBox(const char* text, bool* value)
 {
@@ -46,7 +55,7 @@ void DrawSlider(const char* leftText, const char* rightText, float* value, float
     GuiSlider({UI_SPACING * 2, nextElementPositionY, SLIDER_WIDTH, ELEMENT_SIZE}, leftText,
               rightText, value, minValue, maxValue);
     DrawText(std::to_string(*value).c_str(), (SLIDER_WIDTH + UI_SPACING * 2) / 2.f,
-             nextElementPositionY + 5, ELEMENT_SIZE - 5, WHITE);
+             nextElementPositionY + TEXT_OFFSET, ELEMENT_SIZE - 5, WHITE);
     nextElementPositionY += ELEMENT_SIZE + ELEMENT_SPACING;
 }
 
@@ -58,7 +67,7 @@ void DrawSliderInt(const char* leftText, const char* rightText, int* value, floa
               rightText, &valueFloat, minValue, maxValue);
     *value = valueFloat;
     DrawText(std::to_string(*value).c_str(), (SLIDER_WIDTH + UI_SPACING * 2) / 2.f,
-             nextElementPositionY + 5, ELEMENT_SIZE - 5, WHITE);
+             nextElementPositionY + TEXT_OFFSET, ELEMENT_SIZE - TEXT_OFFSET, WHITE);
     nextElementPositionY += ELEMENT_SIZE + ELEMENT_SPACING;
 }
 
@@ -76,8 +85,16 @@ int DrawButtonCentered(const char* text)
     int res = GuiButton(
         {windowSize.x / 2 - BUTTON_WIDTH / 2.0f, nextElementPositionY, BUTTON_WIDTH, buttonHieght},
         text);
-    nextElementPositionY += buttonHieght + ELEMENT_SPACING * windowSize.y / startWindowSize.y;
+    nextElementPositionY += buttonHieght + BUTTON_SPACING * windowSize.y / startWindowSize.y;
     return res;
+}
+
+void DrawValueBox(const char* text, int* value, int minValue, int maxValue)
+{
+    GuiValueBox(
+        {UI_SPACING * 2 + SLIDER_TEXT_WIDTH, nextElementPositionY, SLIDER_WIDTH, ELEMENT_SIZE},
+        text, value, minValue, maxValue, true);
+    nextElementPositionY += ELEMENT_SIZE + ELEMENT_SPACING;
 }
 
 void DrawSettings()
@@ -86,6 +103,7 @@ void DrawSettings()
                      windowSize.y - UI_SPACING * 2};
     DrawRectangleRounded(rec, 0.1f, 1, Color{128, 128, 128, 128});
     nextElementPositionY = rec.y + UI_SPACING;
+
     DrawCheckBox("vsync", &vsync);
     DrawCheckBox("show-fps", &showFPS);
     DrawSlider("", "pan-sensitivity", &panSensitivity, 100, 1000);
@@ -111,15 +129,20 @@ void DrawLoadMap()
         float posX = UI_SPACING * 2;
         if (saveSlots[i].seed == -1)
         {
+            // New map
             if (GuiButton({posX, nextElementPositionY, BUTTON_SIZE, BUTTON_SIZE}, "+"))
             {
-                BuildMap();
-                SaveToSlot(i);
+                newMapSlot = i;
+                slotSeed = rand();
+                squareMap = true;
+                slotMapSize = {300, 300};
+                isNewWorld = true;
             }
             posX += (BUTTON_SIZE + ELEMENT_SPACING) * 2;
         }
         else
         {
+            // Load map
             if (GuiButton({posX, nextElementPositionY, BUTTON_SIZE, BUTTON_SIZE}, "#131#"))
             {
                 LoadFromSlot(i);
@@ -127,6 +150,7 @@ void DrawLoadMap()
                 isLoadMap = false;
             }
             posX += BUTTON_SIZE + ELEMENT_SPACING;
+            // Delete map
             if (GuiButton({posX, nextElementPositionY, BUTTON_SIZE, BUTTON_SIZE}, "#143#"))
             {
                 isEmptySlot = true;
@@ -150,7 +174,8 @@ void DrawLoadMap()
     {
         int res = GuiMessageBox(
             rec, "Warning",
-            ("Are you sure you want to empty " + saveSlots[slotToEmpty].name + "?").c_str(),
+            ("Are you sure you want to empty " + std::string(saveSlots[slotToEmpty].name) + "?")
+                .c_str(),
             "Yes;No");
         if (res >= 0)
         {
@@ -200,6 +225,43 @@ void DrawGameUI()
     if (isSettings) DrawSettings();
 }
 
+void DrawNewWorld()
+{
+    Rectangle rec = {UI_SPACING, UI_SPACING, windowSize.x - UI_SPACING * 2,
+                     windowSize.y - UI_SPACING * 2};
+    DrawRectangleRounded(rec, 0.1f, 1, Color{128, 128, 128, 128});
+    nextElementPositionY = rec.y + UI_SPACING;
+
+    Vector2 lastMapSize = slotMapSize;
+
+    DrawValueBox("seed", &slotSeed, 0, 100);
+    DrawCheckBox("square map", &squareMap);
+    DrawSlider("", "map size x", &slotMapSize.x, 50, 1000);
+    DrawSlider("", "map size y", &slotMapSize.y, 50, 1000);
+    if (DrawButtonCentered("Create map"))
+    {
+        isNewWorld = false;
+        perlinSeed = slotSeed;
+        mapSize = slotMapSize;
+        BuildMap();
+        SaveToSlot(newMapSlot);
+    }
+
+    if (squareMap)
+    {
+        if (lastMapSize.x != slotMapSize.x) slotMapSize.y = slotMapSize.x;
+        if (lastMapSize.y != slotMapSize.y) slotMapSize.x = slotMapSize.y;
+    }
+
+    {
+        auto buttonRec = rec;
+        buttonRec.width = ELEMENT_SIZE * windowSize.x / startWindowSize.x;
+        buttonRec.height = ELEMENT_SIZE * windowSize.y / startWindowSize.y;
+        buttonRec.x += rec.width - buttonRec.width;
+        if (GuiButton(buttonRec, "#113#")) isNewWorld = false;
+    }
+}
+
 void DrawMainUI()
 {
     if (showFPS) DrawFPS(0, 0);
@@ -212,8 +274,12 @@ void DrawMainUI()
     if (DrawButtonCentered("Settings")) isSettings = !isSettings;
     if (DrawButtonCentered("Exit")) shouldClose = true;
 
-    if (isSettings) DrawSettings();
-    if (isLoadMap) DrawLoadMap();
+    if (isSettings)
+        DrawSettings();
+    else if (isNewWorld)
+        DrawNewWorld();
+    else if (isLoadMap)
+        DrawLoadMap();
 }
 
 void DrawPauseUI()
