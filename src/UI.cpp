@@ -55,9 +55,9 @@ void DrawSlider(const char* leftText, const char* rightText, float* value, float
 {
     GuiSlider({UI_SPACING * 2, nextElementPositionY, SLIDER_WIDTH, ELEMENT_SIZE}, leftText,
               rightText, value, minValue, maxValue);
-    DrawTextEx(myFont, std::to_string(*value).c_str(),
-               {(SLIDER_WIDTH + UI_SPACING * 2) / 2.f, nextElementPositionY + TEXT_OFFSET},
-               ELEMENT_SIZE - 5, myFontSpacing, WHITE);
+    DrawText(std::to_string(*value).c_str(),
+             {(SLIDER_WIDTH + UI_SPACING * 2) / 2.f, nextElementPositionY + TEXT_OFFSET},
+             ELEMENT_SIZE - 5, WHITE);
     nextElementPositionY += ELEMENT_SIZE + ELEMENT_SPACING;
 }
 
@@ -68,19 +68,19 @@ void DrawSliderInt(const char* leftText, const char* rightText, int* value, floa
     GuiSlider({UI_SPACING * 2, nextElementPositionY, SLIDER_WIDTH, ELEMENT_SIZE}, leftText,
               rightText, &valueFloat, minValue, maxValue);
     *value = valueFloat;
-    DrawTextEx(myFont, std::to_string(*value).c_str(),
-               {(SLIDER_WIDTH + UI_SPACING * 2) / 2.f, nextElementPositionY + TEXT_OFFSET},
-               ELEMENT_SIZE - TEXT_OFFSET, myFontSpacing, WHITE);
+    DrawText(std::to_string(*value).c_str(),
+             {(SLIDER_WIDTH + UI_SPACING * 2) / 2.f, nextElementPositionY + TEXT_OFFSET},
+             ELEMENT_SIZE - TEXT_OFFSET, WHITE);
     nextElementPositionY += ELEMENT_SIZE + ELEMENT_SPACING;
 }
 
 void DrawTextCentered(const char* text, int fontSize)
 {
     fontSize = fontSize * windowSize.y / startWindowSize.y;
-    DrawTextEx(myFont, text,
-               {(windowSize.x - MeasureTextEx(myFont, text, fontSize, myFontSpacing).x) / 2,
-                nextElementPositionY},
-               fontSize, myFontSpacing, WHITE);
+    DrawText(text,
+             {(windowSize.x - MeasureTextEx(myFont, text, fontSize, myFontSpacing).x) / 2,
+              nextElementPositionY},
+             fontSize, WHITE);
     nextElementPositionY += fontSize + ELEMENT_SPACING * windowSize.y / startWindowSize.y;
 }
 
@@ -113,8 +113,8 @@ void DrawLanguageButtons(float posX)
         }
         posX += ELEMENT_SIZE + ELEMENT_SPACING;
     }
-    DrawTextEx(myFont, labels["language"].c_str(), {posX, nextElementPositionY},
-               ELEMENT_SIZE - TEXT_OFFSET, myFontSpacing, WHITE);
+    DrawText(labels["language"].c_str(), {posX, nextElementPositionY}, ELEMENT_SIZE - TEXT_OFFSET,
+             WHITE);
 }
 
 void DrawSettings()
@@ -179,8 +179,7 @@ void DrawLoadMap()
             }
             posX += BUTTON_SIZE + ELEMENT_SPACING;
         }
-        DrawTextEx(myFont, saveSlots[i].name.c_str(), {posX, nextElementPositionY}, FONT_SIZE,
-                   myFontSpacing, WHITE);
+        DrawText(saveSlots[i].name.c_str(), {posX, nextElementPositionY}, FONT_SIZE, WHITE);
         nextElementPositionY += BUTTON_SIZE + ELEMENT_SPACING;
     }
 

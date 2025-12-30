@@ -21,7 +21,7 @@ int main()
     SetConfigFlags(flags);
     GuiSetStyle(DEFAULT, TEXT_SIZE, 24);
 
-    InitWindow(windowSize.x, windowSize.y, labels["Colony Simulator"].c_str());
+    InitWindow(windowSize.x, windowSize.y, "Colony Simulator");
     SetExitKey(-1);
 
     GuiSetFont(GetFontDefault());

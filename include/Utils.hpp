@@ -14,6 +14,11 @@
 
 inline float GetRandomFloat(float a, float b) { return rand() * 1.0f / RAND_MAX * (b - a) + a; }
 
+inline void DrawText(const char* text, Vector2 pos, int fontSize, Color color)
+{
+    DrawTextEx(myFont, text, pos, fontSize, myFontSpacing, color);
+}
+
 template <typename Func, typename... Args>
 void ShowLoadingScreen(bool showProgressbar, Func&& f, Args&&... args)
 {
@@ -38,8 +43,7 @@ void ShowLoadingScreen(bool showProgressbar, Func&& f, Args&&... args)
         UpdateWindowSize();
 
         float fontSize = 24;
-        DrawTextEx(myFont, label.c_str(), {0, windowSize.y - fontSize}, fontSize, myFontSpacing,
-                   WHITE);
+        DrawText(label.c_str(), {0, windowSize.y - fontSize}, fontSize, WHITE);
 
         if (showProgressbar)
         {
