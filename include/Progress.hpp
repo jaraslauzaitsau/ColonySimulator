@@ -7,7 +7,7 @@
 #include "Island.hpp"
 
 #include "Human.hpp"
-#include "JSON.hpp"
+#include "Json.hpp"
 #include <vector>
 
 #define MAX_SAVE_SLOTS 7
@@ -21,8 +21,8 @@ struct SaveSlot
     int woodTotal = 0, ironTotal = 0, peopleTotal = 0;
     Vector2 mapSize{300, 300};
 
-    JSON ToJSON();
-    void LoadJSON(JSON& json);
+    Json ToJSON();
+    void LoadJSON(Json& json);
 };
 
 extern std::vector<SaveSlot> saveSlots;

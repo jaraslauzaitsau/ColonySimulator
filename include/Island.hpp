@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "JSON.hpp"
+#include "Json.hpp"
 #include <atomic>
 #include <raylib.h>
 #include <vector>
@@ -25,12 +25,12 @@ struct Island
     Vector2 p1 = {0, 0}, p2 = {0, 0};
     float area = 0;
     int woodColonize = 0, ironColonize = 0, woodCount = 0, woodGrowth = 0, woodMax = 0,
-    ironCount = 0, peopleCount = 0, peopleMax = 0;
+        ironCount = 0, peopleCount = 0, peopleMax = 0;
     float peopleGrowth = 0, addPeopleFraction = 0;
     bool colonized = false;
     int taxes = DEFAULT_TAXES, efficiency = 50;
     int index = -1;
-    
+
     Island() = default;
     Island(Vector2 p1, Vector2 p2, float area, int woodColonize, int ironColonize, int woodCount,
            int woodGrowth, int ironCount, float peopleGrowth, int peopleMax)
@@ -46,8 +46,8 @@ struct Island
     void SendPeople(int count);
     void GrowthTick();
 
-    JSON ToJSON();
-    static Island LoadJSON(JSON& json);
+    Json ToJSON();
+    static Island LoadJSON(Json& json);
 };
 
 extern std::vector<Biome> biomes;

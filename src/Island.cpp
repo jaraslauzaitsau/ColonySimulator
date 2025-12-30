@@ -123,15 +123,15 @@ void Island::GrowthTick()
     }
 }
 
-JSON Island::ToJSON()
+Json Island::ToJSON()
 {
-    JSON json;
+    Json json;
 
-    json["p1"].format = JSONFormat::Inline;
+    json["p1"].format = JsonFormat::Inline;
     json["p1"].push_back(p1.x);
     json["p1"].push_back(p1.y);
 
-    json["p2"].format = JSONFormat::Inline;
+    json["p2"].format = JsonFormat::Inline;
     json["p2"].push_back(p2.x);
     json["p2"].push_back(p2.y);
 
@@ -153,7 +153,7 @@ JSON Island::ToJSON()
     return json;
 }
 
-Island Island::LoadJSON(JSON& json)
+Island Island::LoadJSON(Json& json)
 {
     Island island;
     island.p1 = {static_cast<float>(json["p1"][0].GetDouble()),

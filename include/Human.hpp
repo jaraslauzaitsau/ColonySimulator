@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "JSON.hpp"
+#include "Json.hpp"
 #include "Utils.hpp"
 #include <raymath.h>
 
@@ -31,8 +31,8 @@ struct Human
 
     void MoveToTarget(double deltaTime);
 
-    JSON ToJSON();
-    static Human LoadJSON(JSON& json);
+    Json ToJSON();
+    static Human LoadJSON(Json& json);
 };
 
 extern std::vector<Human> people;

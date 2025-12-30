@@ -33,11 +33,11 @@ void Human::MoveToTarget(double deltaTime)
     if (angle > MAX_ANGLE) angleMultiplier = -1;
 }
 
-JSON Human::ToJSON()
+Json Human::ToJSON()
 {
-    JSON json;
+    Json json;
 
-    json["pos"].format = JSONFormat::Inline;
+    json["pos"].format = JsonFormat::Inline;
     json["pos"].push_back(pos.x);
     json["pos"].push_back(pos.y);
 
@@ -50,7 +50,7 @@ JSON Human::ToJSON()
     return json;
 }
 
-Human Human::LoadJSON(JSON& json)
+Human Human::LoadJSON(Json& json)
 {
     Human human;
 

@@ -14,9 +14,9 @@
 std::vector<SaveSlot> saveSlots(MAX_SAVE_SLOTS);
 int currentSlot = -1;
 
-JSON SaveSlot::ToJSON()
+Json SaveSlot::ToJSON()
 {
-    JSON json;
+    Json json;
 
     json["seed"] = seed;
     json["name"] = name;
@@ -32,14 +32,14 @@ JSON SaveSlot::ToJSON()
     json["ironTotal"] = this->ironTotal;
     json["peopleTotal"] = this->peopleTotal;
 
-    json["mapSize"].format = JSONFormat::Inline;
+    json["mapSize"].format = JsonFormat::Inline;
     json["mapSize"].push_back(this->mapSize.x);
     json["mapSize"].push_back(this->mapSize.y);
 
     return json;
 }
 
-void SaveSlot::LoadJSON(JSON& json)
+void SaveSlot::LoadJSON(Json& json)
 {
     seed = json["seed"].GetDouble();
     name = json["name"].GetString();
@@ -102,7 +102,7 @@ void SaveProgress()
 {
     SaveToSlot(currentSlot);
 
-    JSON json;
+    Json json;
 
     json["version"] = 2;
 
@@ -149,7 +149,7 @@ void LoadProgress()
         return;
     }
 
-    JSON json = JSON::Load("saves.json");
+    Json json = Json::Load("saves.json");
 
     int version = json["version"].GetInt();
 
