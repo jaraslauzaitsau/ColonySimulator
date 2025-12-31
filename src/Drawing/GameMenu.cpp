@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <iostream>
 #include <raygui.h>
+#include <raymath.h>
 
 double growthTimer = 0;
 Vector2 lastMousePosition = GetMousePosition();

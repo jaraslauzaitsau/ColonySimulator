@@ -4,6 +4,8 @@
 
 #include "Perlin.hpp"
 #include "Settings.hpp"
+#include <cmath>
+#include <raymath.h>
 
 int perlinSeed = 0;
 float perlinScale = 0.12f;

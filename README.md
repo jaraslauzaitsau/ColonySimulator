@@ -10,7 +10,8 @@ A simulator of colonizing the world
 
 ## How to build
 
-1. Install Raylib following one of these tutorials based on your system: [Linux](https://github.com/raysan5/raylib/wiki/Working-on-GNU-Linux), [Windows](https://github.com/raysan5/raylib/wiki/Working-on-Windows), [macOS](https://github.com/raysan5/raylib/wiki/Working-on-macOS)
+1. If on Linux, install raylib's dependencies following [this tutorial](https://github.com/raysan5/raylib/wiki/Working-on-GNU-Linux#dependencies)
+1. You'll need a C/C++ compiler and CMake
 1. Run 
 ```bash
 git clone https://github.com/SemkiShow/ColonySimulator

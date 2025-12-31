@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <map>
 #include <queue>
+#include <raymath.h>
 
 bool operator<(const Vector2& a, const Vector2& b)
 {

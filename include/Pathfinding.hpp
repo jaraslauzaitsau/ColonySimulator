@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <raymath.h>
 #include <vector>
+typedef struct Vector2 Vector2;
 
 typedef std::vector<Vector2> Path;
 

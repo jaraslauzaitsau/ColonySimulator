@@ -2,11 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-only
 
-#include "Progress.hpp"
-
 #include "Drawing.hpp"
 #include "Human.hpp"
 #include "Perlin.hpp"
+#include "Progress.hpp"
 #include "Settings.hpp"
 #include <ctime>
 #include <filesystem>

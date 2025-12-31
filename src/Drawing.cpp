@@ -12,6 +12,7 @@
 #include "Settings.hpp"
 #include <ctime>
 #include <raygui.h>
+#include <raymath.h>
 
 bool shouldClose = false;
 

@@ -11,7 +11,7 @@ Kwadratowa mapa
 Rozmiar mapy X
 Rozmiar mapy Y
 Utwórz mapę
-Symulator Kolonii
+Symulator Kolonizacji
 Graj
 Ustawienia
 O grze

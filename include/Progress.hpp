@@ -4,9 +4,8 @@
 
 #pragma once
 
-#include "Island.hpp"
-
 #include "Human.hpp"
+#include "Island.hpp"
 #include "Json.hpp"
 #include "Languages.hpp"
 #include <vector>

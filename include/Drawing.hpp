@@ -5,7 +5,10 @@
 
 #pragma once
 
-#include <raylib.h>
+typedef struct Vector2 Vector2;
+typedef struct Shader Shader;
+typedef struct Texture Texture;
+typedef struct Font Font;
 
 extern bool shouldClose;
 

@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <raymath.h>
+typedef struct Vector2 Vector2;
 
 float GetPerlin(Vector2 v);
 bool InsideMap(Vector2 pos);

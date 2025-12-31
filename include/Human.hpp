@@ -6,7 +6,7 @@
 
 #include "Json.hpp"
 #include "Utils.hpp"
-#include <raymath.h>
+typedef struct Vector2 Vector2;
 
 #define MIN_SPEED 0.2f
 #define MAX_SPEED 3

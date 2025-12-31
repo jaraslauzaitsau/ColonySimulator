@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <raymath.h>
+typedef struct Vector2 Vector2;
 
 extern bool vsync;
 extern bool showFPS;

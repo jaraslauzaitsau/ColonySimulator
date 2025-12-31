@@ -11,8 +11,10 @@
 #include "Utils.hpp"
 #include <cfloat>
 #include <climits>
+#include <cmath>
 #include <iostream>
 #include <raygui.h>
+#include <raymath.h>
 #include <unordered_map>
 
 #define K_WOOD_COLONIZE 0.05f
