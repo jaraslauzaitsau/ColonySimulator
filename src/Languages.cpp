@@ -18,7 +18,7 @@ void GetAllLanguages()
     for (auto& file: std::filesystem::directory_iterator("resources/languages"))
     {
         if (!file.is_regular_file() || file.path().extension() != ".txt") continue;
-        languages.push_back(file.path().stem());
+        languages.push_back(file.path().stem().string());
     }
 }
 

@@ -27,11 +27,11 @@ int main()
     GuiSetFont(GetFontDefault());
 
     {
+        Load();
         auto func = [](std::string& label, float& loadingPercent, std::atomic<bool>& finished)
         {
             label = "Loading progress...";
             loadingPercent = 0;
-            Load();
             LoadProgress();
             finished = true;
         };

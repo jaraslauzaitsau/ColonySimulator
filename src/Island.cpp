@@ -289,7 +289,7 @@ void BuildMap()
         label = "Loading map...";
         woodTotal = ironTotal = peopleTotal = 0;
         BuildIslands(loadingPercent, finished, 0.1f);
-        ReloadIslandShaderValues();
     };
     ShowLoadingScreen(true, func);
+    ReloadIslandShaderValues();
 }
