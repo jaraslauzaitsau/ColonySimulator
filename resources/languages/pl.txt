@@ -24,3 +24,9 @@ Czy chcesz zapisać grę przed wyjściem?
 Pusty slot
 Slot
 Język
+Wczytywanie stanu gry...
+Zapisywanie postępów...
+Generowanie mapy...
+Główny programista: SemkiShow
+Programista: jaraslauzaitsau
+Gra wydana na licencji GPL v3.0

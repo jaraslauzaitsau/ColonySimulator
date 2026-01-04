@@ -14,7 +14,7 @@
 
 inline float GetRandomFloat(float a, float b) { return rand() * 1.0f / RAND_MAX * (b - a) + a; }
 
-inline void DrawText(const char* text, Vector2 pos, int fontSize, Color color)
+inline void DrawTextCustom(const char* text, Vector2 pos, int fontSize, Color color)
 {
     DrawTextEx(myFont, text, pos, fontSize, myFontSpacing, color);
 }
@@ -40,10 +40,8 @@ void ShowLoadingScreen(bool showProgressbar, Func&& f, Args&&... args)
 
         ClearBackground(BLACK);
 
-        UpdateWindowSize();
-
         float fontSize = 24;
-        DrawText(label.c_str(), {0, windowSize.y - fontSize}, fontSize, WHITE);
+        DrawTextCustom(label.c_str(), {0, windowSize.y - fontSize}, fontSize, WHITE);
 
         if (showProgressbar)
         {
@@ -55,6 +53,4 @@ void ShowLoadingScreen(bool showProgressbar, Func&& f, Args&&... args)
 
         EndDrawing();
     }
-
-    ReloadIslandShaderValues();
 }

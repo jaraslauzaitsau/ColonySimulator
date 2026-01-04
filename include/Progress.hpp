@@ -7,7 +7,6 @@
 #include "Human.hpp"
 #include "Island.hpp"
 #include "Json.hpp"
-#include "Languages.hpp"
 #include <vector>
 
 #define MAX_SAVE_SLOTS 7
@@ -15,7 +14,7 @@
 struct SaveSlot
 {
     int seed = -1;
-    std::string name = labels["Empty slot"];
+    std::string name = "Empty slot";
     std::vector<Island> islands;
     std::vector<Human> people;
     int woodTotal = 0, ironTotal = 0, peopleTotal = 0;

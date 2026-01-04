@@ -78,18 +78,18 @@ void ReloadIslandShaderValues()
 
 void InitGPU()
 {
-    lockTexture = LoadTexture("resources/lock.png");
-    woodTexture = LoadTexture("resources/wooden_log.png");
-    ironTexture = LoadTexture("resources/iron_ingot.png");
-    humanTexture = LoadTexture("resources/human.png");
+    lockTexture = LoadTexture("resources/textures/lock.png");
+    woodTexture = LoadTexture("resources/textures/wooden_log.png");
+    ironTexture = LoadTexture("resources/textures/iron_ingot.png");
+    humanTexture = LoadTexture("resources/textures/human.png");
 
     const char* symbols =
         "`1234567890-=qwertyuiop[]\\asdfghjkl;'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?ęóąśłżźćńĘÓĄŚŁŻŹĆŃ";
     int codepointCount = 0;
     int* codepoints = LoadCodepoints(symbols, &codepointCount);
-    myFont = LoadFontEx("resources/JetBrainsMono-Bold.ttf", 512, codepoints, codepointCount);
+    myFont = LoadFontEx("resources/fonts/JetBrainsMono-Bold.ttf", 512, codepoints, codepointCount);
 
-    biomeShader = LoadShader(0, "resources/Perlin.fs");
+    biomeShader = LoadShader(0, "resources/shaders/Perlin.fs");
 
     int biomeCount = (int)biomes.size();
     SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uBiomeCount"), &biomeCount,
@@ -117,7 +117,7 @@ void InitGPU()
         SetShaderValueV(biomeShader, GetShaderLocation(biomeShader, "uBiomeColor"), colors,
                         SHADER_UNIFORM_VEC4, biomeCount);
     }
-    islandShader = LoadShader(0, "resources/Island.fs");
+    islandShader = LoadShader(0, "resources/shaders/Island.fs");
 }
 
 void DrawFrame()

@@ -4,6 +4,7 @@
 
 #include "Drawing.hpp"
 #include "Human.hpp"
+#include "Languages.hpp"
 #include "Perlin.hpp"
 #include "Progress.hpp"
 #include "Settings.hpp"

@@ -24,3 +24,9 @@ Would you like to save the game before exiting?
 Empty slot
 Slot
 language
+Loading progress...
+Saving progress...
+Loading map...
+Lead Developer: SemkiShow
+Developer: jaraslauzaitsau
+This game is licensed under GPL v3.0

@@ -75,8 +75,9 @@ void DrawStats(int islandIdx)
                   woodScale, WHITE);
     {
         Vector2 textOffset = GetTextOffset(woodTexture, woodScale);
-        DrawText(std::to_string(island.colonized ? island.woodCount : island.woodColonize).c_str(),
-                 textOffset, textScale, WHITE);
+        DrawTextCustom(
+            std::to_string(island.colonized ? island.woodCount : island.woodColonize).c_str(),
+            textOffset, textScale, WHITE);
     }
     offset.y += woodTexture.height * woodScale + margin;
 
@@ -85,8 +86,9 @@ void DrawStats(int islandIdx)
                   ironScale, WHITE);
     {
         Vector2 textOffset = GetTextOffset(ironTexture, ironScale);
-        DrawText(std::to_string(island.colonized ? island.ironCount : island.ironColonize).c_str(),
-                 textOffset, textScale, WHITE);
+        DrawTextCustom(
+            std::to_string(island.colonized ? island.ironCount : island.ironColonize).c_str(),
+            textOffset, textScale, WHITE);
     }
     offset.y += ironTexture.height * ironScale + margin;
 
@@ -98,7 +100,8 @@ void DrawStats(int islandIdx)
                       humanScale, WHITE);
         {
             Vector2 textOffset = GetTextOffset(humanTexture, humanScale);
-            DrawText(std::to_string(island.peopleCount).c_str(), textOffset, textScale, WHITE);
+            DrawTextCustom(std::to_string(island.peopleCount).c_str(), textOffset, textScale,
+                           WHITE);
         }
         offset.y += humanTexture.height * humanScale + margin;
     }
@@ -141,7 +144,7 @@ void DrawResources()
     DrawTextureEx(woodTexture, offset, 0, woodScale, WHITE);
     {
         Vector2 textOffset = GetTextOffset(woodTexture, woodScale);
-        DrawText(std::to_string(woodTotal).c_str(), textOffset, textScale, WHITE);
+        DrawTextCustom(std::to_string(woodTotal).c_str(), textOffset, textScale, WHITE);
     }
     offset.y += woodTexture.height * woodScale + margin;
 
@@ -149,7 +152,7 @@ void DrawResources()
     DrawTextureEx(ironTexture, offset, 0, ironScale, WHITE);
     {
         Vector2 textOffset = GetTextOffset(ironTexture, ironScale);
-        DrawText(std::to_string(ironTotal).c_str(), textOffset, textScale, WHITE);
+        DrawTextCustom(std::to_string(ironTotal).c_str(), textOffset, textScale, WHITE);
     }
     offset.y += ironTexture.height * ironScale + margin;
 
@@ -158,7 +161,7 @@ void DrawResources()
                   humanScale, WHITE);
     {
         Vector2 textOffset = GetTextOffset(humanTexture, humanScale);
-        DrawText(std::to_string(peopleTotal).c_str(), textOffset, textScale, WHITE);
+        DrawTextCustom(std::to_string(peopleTotal).c_str(), textOffset, textScale, WHITE);
     }
     offset.y += humanTexture.height * humanScale + margin;
 }
@@ -250,7 +253,7 @@ void DrawGameMenu()
             DrawRectangleRounded({mouse.x - 3, mouse.y - 3,
                                   MeasureTextEx(myFont, text, fontSize, myFontSpacing).x + 6, 30},
                                  0.25f, 16, {0, 0, 0, 127});
-            DrawText(text, mouse, fontSize, WHITE);
+            DrawTextCustom(text, mouse, fontSize, WHITE);
         }
     }
 

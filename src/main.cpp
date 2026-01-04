@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
 #include "Drawing.hpp"
+#include "Languages.hpp"
 #include "Progress.hpp"
 #include "Settings.hpp"
 #include <ctime>
@@ -25,20 +26,20 @@ int main()
     SetExitKey(-1);
 
     GuiSetFont(GetFontDefault());
+    
+    Load();
+    InitGPU();
 
     {
         auto func = [](std::string& label, float& loadingPercent, std::atomic<bool>& finished)
         {
-            label = "Loading progress...";
+            label = labels["Loading progress..."];
             loadingPercent = 0;
-            Load();
             LoadProgress();
             finished = true;
         };
         ShowLoadingScreen(false, func);
     }
-
-    InitGPU();
 
     GuiSetFont(myFont);
     GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
@@ -51,7 +52,7 @@ int main()
     {
         auto func = [](std::string& label, float& loadingPercent, std::atomic<bool>& finished)
         {
-            label = "Saving progress...";
+            label = labels["Saving progress..."];
             loadingPercent = 0;
             Save();
             SaveProgress();
