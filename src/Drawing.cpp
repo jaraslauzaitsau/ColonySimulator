@@ -155,10 +155,7 @@ void DrawFrame()
 
     EndDrawing();
 
-    double deltaTime = GetTime() - timer;
-    timer = GetTime();
-
-    if (currentMenu == Menu::Game) ProcessPlayerInput(deltaTime);
+    if (currentMenu == Menu::Game) ProcessPlayerInput(GetFrameTime());
 
     if (lastVsync != vsync)
     {
