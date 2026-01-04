@@ -22,7 +22,7 @@ struct Ship
     int people = 0;
     bool reached = false;
 
-    Ship(size_t source_index, size_t target_index, int peopleCount = 1);
+    Ship(size_t sourceIndex, size_t targetIndex, int peopleCount = 1);
     void Move(float deltaTime);
 };
 

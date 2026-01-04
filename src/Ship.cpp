@@ -10,8 +10,6 @@
 #include <raymath.h>
 #include <vector>
 
-std::vector<Ship> ships;
-
 Ship::Ship(size_t sourceIndex, size_t targetIndex, int peopleCount)
     : sourceIndex(sourceIndex), targetIndex(targetIndex), people(peopleCount)
 {
@@ -33,7 +31,9 @@ Ship::Ship(size_t sourceIndex, size_t targetIndex, int peopleCount)
     // {
     //     path = FindPath(pos, end, false, 1.0f);
     //     pathCache[sourceIndex][targetIndex] = path;
-    // } Leave this for now, as path cache needs to be loaded
+    // }
+    // Leave this for now, as path cache needs to be loaded
+
     path = FindPath(pos, end, false, 1.0f);
     nextPointDir = Vector2Normalize(path[0] - pos);
 }
