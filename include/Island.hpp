@@ -48,6 +48,7 @@ struct Island
     void SendPeople(int count);
     void AddPeople(int count);
     void GrowthTick();
+    void DrawStats();
 
     Json ToJSON();
     static Island LoadJSON(Json& json);

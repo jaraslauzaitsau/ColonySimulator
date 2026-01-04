@@ -24,98 +24,6 @@ Vector2 mousePressedStart = GetMousePosition();
 
 void OpenGameMenu() { currentMenu = Menu::Game; }
 
-void DrawStats(int islandIdx)
-{
-    auto island = islands[islandIdx];
-
-    // Do not draw anything if the scale is too small
-    float scale = 0.01f / perlinScale;
-    if (scale < 0.05f) return;
-
-    // Constants
-    const float margin = 100 * scale, lockScale = 0.5f * scale, woodScale = 0.15f * scale,
-                ironScale = 0.15f * scale, humanScale = 0.075f * scale, textScale = 175 * scale,
-                buttonScale = 300 * scale;
-
-    // Calculate the center point of the island
-    Vector2 center = GlslToRaylib((island.p2 + island.p1) / 2);
-    center.x -= lockTexture.width * scale / 2;
-    center.y -= lockTexture.height * scale / 2;
-
-    // Calculate the offset
-    Vector2 offset = {0, -lockTexture.height * lockScale / 2};
-    if (island.colonized) offset *= -1;
-
-    // Draw lock
-    if (!island.colonized)
-    {
-        DrawTextureEx(lockTexture, center + offset, 0, lockScale, WHITE);
-        offset.y += lockTexture.height * lockScale + margin;
-    }
-
-    auto GetTextOffset = [&](const Texture& texture, float textureScale) -> Vector2
-    {
-        Vector2 newOffset = center + offset;
-        newOffset.x +=
-            fmax(woodTexture.width * woodScale, ironTexture.width * ironScale) / 2 + margin;
-        newOffset.y += (texture.height * textureScale - textScale) * scale / 2;
-        return newOffset;
-    };
-
-    // Draw a dark background for better text visibility
-    Rectangle rec = {center.x + offset.x - lockTexture.width * lockScale / 2,
-                     center.y + offset.y - margin / 2, lockTexture.width * lockScale * 2,
-                     woodTexture.height * woodScale + ironTexture.height * ironScale + margin * 2 +
-                         (island.colonized ? humanTexture.height * humanScale + margin : 0)};
-    DrawRectangleRounded(rec, 0.25f, 16, {0, 0, 0, 127});
-    if (!island.colonized) DrawRectangleRoundedLinesEx(rec, 0.25f, 16, 3, RED);
-
-    // Draw wood
-    DrawTextureEx(woodTexture, center + offset - Vector2{woodTexture.width * woodScale / 2, 0}, 0,
-                  woodScale, WHITE);
-    {
-        Vector2 textOffset = GetTextOffset(woodTexture, woodScale);
-        DrawTextCustom(
-            std::to_string(island.colonized ? island.woodCount : island.woodColonize).c_str(),
-            textOffset, textScale, WHITE);
-    }
-    offset.y += woodTexture.height * woodScale + margin;
-
-    // Draw iron
-    DrawTextureEx(ironTexture, center + offset - Vector2{ironTexture.width * ironScale / 2, 0}, 0,
-                  ironScale, WHITE);
-    {
-        Vector2 textOffset = GetTextOffset(ironTexture, ironScale);
-        DrawTextCustom(
-            std::to_string(island.colonized ? island.ironCount : island.ironColonize).c_str(),
-            textOffset, textScale, WHITE);
-    }
-    offset.y += ironTexture.height * ironScale + margin;
-
-    // Draw people
-    if (island.colonized)
-    {
-        DrawTextureEx(humanTexture,
-                      center + offset - Vector2{humanTexture.width * humanScale / 2, 0}, 0,
-                      humanScale, WHITE);
-        {
-            Vector2 textOffset = GetTextOffset(humanTexture, humanScale);
-            DrawTextCustom(std::to_string(island.peopleCount).c_str(), textOffset, textScale,
-                           WHITE);
-        }
-        offset.y += humanTexture.height * humanScale + margin;
-    }
-
-    // Draw taxes button
-    if (island.colonized)
-    {
-        auto buttonRec = rec;
-        buttonRec.width = buttonRec.height = buttonScale;
-        buttonRec.x += rec.width;
-        if (GuiButton(buttonRec, "#142#")) islandEditIdx = islandIdx;
-    }
-}
-
 void DrawResources()
 {
     // Constants
@@ -237,9 +145,9 @@ void DrawGameMenu()
         EndShaderMode();
     }
 
-    for (size_t i = 0; i < islands.size(); i++)
+    for (auto& island: islands)
     {
-        DrawStats(i);
+        island.DrawStats();
     }
 
     DrawResources();
