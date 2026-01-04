@@ -23,7 +23,7 @@ extern Menu currentMenu;
 
 extern Vector2 windowSize;
 
-extern Shader biomeShader;
+extern Shader perlinShader;
 extern Shader islandShader;
 
 extern Texture lockTexture;

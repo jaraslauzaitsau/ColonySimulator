@@ -92,7 +92,7 @@ void LoadFromSlot(int idx)
     peopleTotal = saveSlots[idx].peopleTotal;
     mapSize = saveSlots[idx].mapSize;
 
-    SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uSeed"), &perlinSeed,
+    SetShaderValue(perlinShader, GetShaderLocation(perlinShader, "uSeed"), &perlinSeed,
                    SHADER_UNIFORM_INT);
 }
 

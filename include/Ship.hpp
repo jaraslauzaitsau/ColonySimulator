@@ -1,24 +1,25 @@
 // SPDX-FileCopyrightText: 2025 Jaraslau Zaitsau
+// SPDX-FileContributor: SemkiShow
 //
 // SPDX-License-Identifier: GPL-3.0-only
 
 #pragma once
 
-#include "Island.hpp"
 #include "Pathfinding.hpp"
+#include <raylib.h>
 
 #define SHIP_SPEED 25.0f
 
 struct Ship
 {
-    size_t source_index;
-    size_t target_index;
-    Vector2 pos;
+    size_t sourceIndex = 0;
+    size_t targetIndex = 0;
+    Vector2 pos{0, 0};
     float rotation = 0;
     Path path;
-    Vector2 nextPointDir;
-    unsigned int nextPointIdx = 0;
-    int people;
+    Vector2 nextPointDir{0, 0};
+    size_t nextPointIdx = 0;
+    int people = 0;
     bool reached = false;
 
     Ship(size_t source_index, size_t target_index, int peopleCount = 1);

@@ -3,11 +3,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-only
 
-#include "Island.hpp"
 #include "Drawing.hpp"
 #include "Human.hpp"
-#include "Pathfinding.hpp"
+#include "Island.hpp"
 #include "Languages.hpp"
+#include "Pathfinding.hpp"
 #include "Perlin.hpp"
 #include "Settings.hpp"
 #include "Ship.hpp"
@@ -267,7 +267,8 @@ void BuildIslands(float& loadingPercent, std::atomic<bool>& finished, float step
     }
     std::cout << "Found " << passed << " large enough islands\n";
 
-    pathCache = std::vector<std::vector<Path>>(islands.size(), std::vector<Path>(islands.size(), Path{}));
+    pathCache =
+        std::vector<std::vector<Path>>(islands.size(), std::vector<Path>(islands.size(), Path{}));
 
     // Set the closest island to center as colonized
     int minDistanceIslandIdx = 0;

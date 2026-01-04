@@ -24,9 +24,9 @@ bool operator<(const Vector2& a, const Vector2& b)
 struct Node
 {
     Vector2 pos;
-    float fCost;
+    float cost;
 
-    bool operator>(const Node& other) const { return fCost > other.fCost; }
+    bool operator>(const Node& other) const { return cost > other.cost; }
 };
 
 float GetHeuristic(Vector2 a, Vector2 b) { return std::abs(a.x - b.x) + std::abs(a.y - b.y); }
@@ -71,12 +71,13 @@ Path FindPath(Vector2 start, Vector2 goal, bool onLand, float stepSize)
                 neighbor.y < -mapSize.y / 2 || neighbor.y > mapSize.y / 2)
                 continue;
 
-            if (onLand && GetPerlin(neighbor) < LAND_START) continue;
-            if (!onLand && GetPerlin(neighbor) >= LAND_START) continue;
+            auto neighborPerlin = GetPerlin(neighbor);
+            if (onLand && neighborPerlin < LAND_START) continue;
+            if (!onLand && neighborPerlin >= LAND_START) continue;
 
             // Weight calculation
             float currentNoise = GetPerlin(current);
-            float neighborNoise = GetPerlin(neighbor);
+            float neighborNoise = neighborPerlin;
 
             // Penalty for climbing steep noise gradients
             float diff = std::abs(neighborNoise - currentNoise);
@@ -88,8 +89,8 @@ Path FindPath(Vector2 start, Vector2 goal, bool onLand, float stepSize)
             {
                 cameFrom[neighbor] = current;
                 cost[neighbor] = tentativeCost;
-                float fCost = tentativeCost + GetHeuristic(neighbor, goal);
-                openSet.push({neighbor, fCost});
+                float cost = tentativeCost + GetHeuristic(neighbor, goal);
+                openSet.push({neighbor, cost});
             }
         }
     }
