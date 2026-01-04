@@ -59,3 +59,5 @@ void Ship::Move(float deltaTime)
         rotation = atan2f(nextPointDir.y, nextPointDir.x) * 180.0f / PI;
     }
 }
+
+std::vector<Ship> ships;
