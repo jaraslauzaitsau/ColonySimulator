@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-only
 
-#include "Island.hpp"
 #include "Pathfinding.hpp"
+#include "Island.hpp"
 #include "Perlin.hpp"
 #include "Settings.hpp"
 #include <algorithm>

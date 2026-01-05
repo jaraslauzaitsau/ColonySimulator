@@ -26,7 +26,7 @@ int main()
     SetExitKey(-1);
 
     GuiSetFont(GetFontDefault());
-    
+
     Load();
     InitGPU();
 

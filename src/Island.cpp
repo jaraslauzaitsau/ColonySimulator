@@ -3,9 +3,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0-only
 
+#include "Island.hpp"
 #include "Drawing.hpp"
 #include "Human.hpp"
-#include "Island.hpp"
 #include "Languages.hpp"
 #include "Perlin.hpp"
 #include "Settings.hpp"

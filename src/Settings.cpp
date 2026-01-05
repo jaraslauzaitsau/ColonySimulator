@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-only
 
-#include "Languages.hpp"
 #include "Settings.hpp"
+#include "Languages.hpp"
 #include <fstream>
 #include <raymath.h>
 #include <vector>

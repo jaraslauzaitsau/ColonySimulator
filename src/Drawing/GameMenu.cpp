@@ -3,8 +3,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-only
 
-#include "Drawing.hpp"
 #include "Drawing/GameMenu.hpp"
+#include "Drawing.hpp"
 #include "Human.hpp"
 #include "Island.hpp"
 #include "Perlin.hpp"

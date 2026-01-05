@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-only
 
+#include "UI.hpp"
 #include "Drawing.hpp"
 #include "Drawing/GameMenu.hpp"
 #include "Island.hpp"
@@ -10,7 +11,6 @@
 #include "Perlin.hpp"
 #include "Progress.hpp"
 #include "Settings.hpp"
-#include "UI.hpp"
 #include <raygui.h>
 #include <raylib.h>
 #include <string>
@@ -353,7 +353,8 @@ void DrawPauseUI()
                                 labels["Yes;No"].c_str());
         if (res >= 0)
         {
-            if (res == 1) SaveProgress();
+            if (res != 1) LoadFromSlot(currentSlot);
+            SaveProgress();
             currentMenu = Menu::Main;
             isSaveGame = false;
         }
