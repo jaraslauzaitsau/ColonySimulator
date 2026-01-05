@@ -5,7 +5,6 @@
 #pragma once
 
 #include <vector>
-#include <raylib.h>
 
 typedef struct Vector2 Vector2;
 

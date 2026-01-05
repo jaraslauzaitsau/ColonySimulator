@@ -3,12 +3,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-only
 
+#include "Ship.hpp"
 #include "Island.hpp"
 #include "Pathfinding.hpp"
 #include "Perlin.hpp"
-#include "Ship.hpp"
 #include <raymath.h>
 #include <vector>
+
+std::vector<Ship> ships;
 
 Ship::Ship(size_t sourceIndex, size_t targetIndex, int peopleCount)
     : sourceIndex(sourceIndex), targetIndex(targetIndex), people(peopleCount)
@@ -59,5 +61,3 @@ void Ship::Move(float deltaTime)
         rotation = atan2f(nextPointDir.y, nextPointDir.x) * 180.0f / PI;
     }
 }
-
-std::vector<Ship> ships;
