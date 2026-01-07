@@ -10,8 +10,8 @@
 #include "Pathfinding.hpp"
 #include "Perlin.hpp"
 #include "Settings.hpp"
-#include "UI.hpp"
 #include "Ship.hpp"
+#include "UI.hpp"
 #include "Utils.hpp"
 #include <cfloat>
 #include <climits>
@@ -93,12 +93,17 @@ void Island::SendPeople(int count)
     ships.emplace_back(Ship(islands[maxPeopleIslandId].index, this->index, count));
 
     int counter = 0;
-    for (size_t i = 0; i < people.size(); i++)
+    std::vector<size_t> toErase;
+    for (size_t i = 0; i < people.size() && toErase.size() < count; ++i)
     {
-        if (counter >= count) break;
-        if (people[i].islandIdx != maxPeopleIslandId) continue;
-        people.erase(people.begin() + i);
-        counter++;
+        if (people[i].islandIdx == maxPeopleIslandId)
+        {
+            toErase.push_back(i);
+        }
+    }
+    for (auto it = toErase.rbegin(); it != toErase.rend(); ++it)
+    {
+        people.erase(people.begin() + *it);
     }
 }
 
