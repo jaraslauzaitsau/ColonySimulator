@@ -93,17 +93,16 @@ void Island::SendPeople(int count)
     ships.emplace_back(Ship(islands[maxPeopleIslandId].index, this->index, count));
 
     int counter = 0;
-    std::vector<size_t> toErase;
-    for (size_t i = 0; i < people.size() && toErase.size() < count; ++i)
+    for (auto it = people.begin(); it != people.end();)
     {
-        if (people[i].islandIdx == maxPeopleIslandId)
+        if (counter >= count) break;
+        if (it->islandIdx != maxPeopleIslandId)
         {
-            toErase.push_back(i);
+            ++it;
+            continue;
         }
-    }
-    for (auto it = toErase.rbegin(); it != toErase.rend(); ++it)
-    {
-        people.erase(people.begin() + *it);
+        it = people.erase(it);
+        counter++;
     }
 }
 

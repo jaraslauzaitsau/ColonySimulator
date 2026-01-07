@@ -9,7 +9,6 @@
 #include "Perlin.hpp"
 #include <raymath.h>
 #include <vector>
-#include <iostream>
 
 std::vector<Ship> ships;
 
@@ -21,18 +20,16 @@ Ship::Ship(size_t sourceIndex, size_t targetIndex, int peopleCount)
     Vector2 end = islands[targetIndex].GetRandomPoint();
     Vector2 increment = Vector2Normalize(end - pos) * 0.25f;
 
-    do
+    while (path.empty())
     {
-        do
+        while (GetPerlin(pos) >= LAND_START)
             pos += increment;
-        while (GetPerlin(pos) >= LAND_START);
 
-        do
+        while (GetPerlin(end) >= LAND_START)
             end -= increment;
-        while (GetPerlin(end) >= LAND_START);
 
         path = FindPath(pos, end, false, 1.0f);
-    } while (path.empty());
+    }
 
     // if (pathCache[sourceIndex][targetIndex].size() > 0)
     // {
