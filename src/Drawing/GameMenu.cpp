@@ -79,26 +79,16 @@ void UpdateDynamicShaderValues()
     float scale = perlinScale;
     SetShaderValue(perlinShader, GetShaderLocation(perlinShader, "uScale"), &scale,
                    SHADER_UNIFORM_FLOAT);
-    SetShaderValue(islandShader, GetShaderLocation(islandShader, "uScale"), &scale,
-                   SHADER_UNIFORM_FLOAT);
 
     windowSize = {(float)GetRenderWidth(), (float)GetRenderHeight()};
     SetShaderValue(perlinShader, GetShaderLocation(perlinShader, "uResolution"),
-                   (float*)&windowSize, SHADER_UNIFORM_VEC2);
-    SetShaderValue(islandShader, GetShaderLocation(islandShader, "uResolution"),
                    (float*)&windowSize, SHADER_UNIFORM_VEC2);
     windowSize /= GetWindowScaleDPI();
 
     SetShaderValue(perlinShader, GetShaderLocation(perlinShader, "uOffset"), (float*)&perlinOffset,
                    SHADER_UNIFORM_VEC2);
-    SetShaderValue(islandShader, GetShaderLocation(islandShader, "uOffset"), (float*)&perlinOffset,
-                   SHADER_UNIFORM_VEC2);
 
     SetShaderValue(perlinShader, GetShaderLocation(perlinShader, "uMapSize"), (float*)&mapSize,
-                   SHADER_UNIFORM_VEC2);
-
-    Vector2 mousePosition = RaylibToGlsl(GetMousePosition());
-    SetShaderValue(islandShader, GetShaderLocation(islandShader, "uMouse"), (float*)&mousePosition,
                    SHADER_UNIFORM_VEC2);
 }
 
@@ -142,13 +132,6 @@ void DrawGameMenu()
                        {pos.x, pos.y, shipTexture.width * scale, shipTexture.height * scale},
                        {shipTexture.width * scale / 2.0f, shipTexture.height * scale}, 0, WHITE);
         // DrawRectangle(pos.x - 10, pos.y - 20, 20, 20, Color{127, 127, 127, 127});
-    }
-
-    if (showIslandsBoxes)
-    {
-        BeginShaderMode(islandShader);
-        DrawRectangle(0, 0, windowSize.x, windowSize.y, WHITE);
-        EndShaderMode();
     }
 
     for (auto& island: islands)
