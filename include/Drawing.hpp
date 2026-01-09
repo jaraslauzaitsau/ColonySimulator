@@ -24,7 +24,6 @@ extern Menu currentMenu;
 extern Vector2 windowSize;
 
 extern Shader biomeShader;
-extern Shader islandShader;
 
 extern Texture lockTexture;
 extern Texture woodTexture;
@@ -38,7 +37,6 @@ Vector2 RaylibToGlsl(Vector2 v);
 Vector2 GlslToRaylib(Vector2 v);
 
 void UpdateWindowSize();
-void ReloadIslandShaderValues();
 void InitGPU();
 void DrawFrame();
 void FreeResources();

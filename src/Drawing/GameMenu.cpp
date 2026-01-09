@@ -76,26 +76,16 @@ void UpdateDynamicShaderValues()
     float scale = perlinScale;
     SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uScale"), &scale,
                    SHADER_UNIFORM_FLOAT);
-    SetShaderValue(islandShader, GetShaderLocation(islandShader, "uScale"), &scale,
-                   SHADER_UNIFORM_FLOAT);
 
     windowSize = {(float)GetRenderWidth(), (float)GetRenderHeight()};
     SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uResolution"), (float*)&windowSize,
                    SHADER_UNIFORM_VEC2);
-    SetShaderValue(islandShader, GetShaderLocation(islandShader, "uResolution"),
-                   (float*)&windowSize, SHADER_UNIFORM_VEC2);
     windowSize /= GetWindowScaleDPI();
 
     SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uOffset"), (float*)&perlinOffset,
                    SHADER_UNIFORM_VEC2);
-    SetShaderValue(islandShader, GetShaderLocation(islandShader, "uOffset"), (float*)&perlinOffset,
-                   SHADER_UNIFORM_VEC2);
 
     SetShaderValue(biomeShader, GetShaderLocation(biomeShader, "uMapSize"), (float*)&mapSize,
-                   SHADER_UNIFORM_VEC2);
-
-    Vector2 mousePosition = RaylibToGlsl(GetMousePosition());
-    SetShaderValue(islandShader, GetShaderLocation(islandShader, "uMouse"), (float*)&mousePosition,
                    SHADER_UNIFORM_VEC2);
 }
 
@@ -116,13 +106,6 @@ void DrawGameMenu()
                        {pos.x, pos.y, humanTexture.width * scale, humanTexture.height * scale},
                        {humanTexture.width * scale / 2.0f, humanTexture.height * scale},
                        human.angle, WHITE);
-    }
-
-    if (showIslandsBoxes)
-    {
-        BeginShaderMode(islandShader);
-        DrawRectangle(0, 0, windowSize.x, windowSize.y, WHITE);
-        EndShaderMode();
     }
 
     for (auto& island: islands)

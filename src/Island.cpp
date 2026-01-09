@@ -380,5 +380,4 @@ void BuildMap()
         BuildIslands(loadingPercent, finished, 0.1f);
     };
     ShowLoadingScreen(true, func);
-    ReloadIslandShaderValues();
 }

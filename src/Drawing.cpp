@@ -23,7 +23,6 @@ double timer = 0;
 bool lastVsync = vsync;
 
 Shader biomeShader;
-Shader islandShader;
 
 Texture lockTexture;
 Texture woodTexture;
@@ -56,24 +55,6 @@ void UpdateWindowSize()
 {
     windowSize = {(float)GetRenderWidth(), (float)GetRenderHeight()};
     windowSize /= GetWindowScaleDPI();
-}
-
-void ReloadIslandShaderValues()
-{
-    int islandsCount = islands.size();
-    SetShaderValue(islandShader, GetShaderLocation(islandShader, "uIslandsCount"), &islandsCount,
-                   SHADER_UNIFORM_INT);
-
-    Vector2 islandStarts[2048], islandEnds[2048];
-    for (size_t i = 0; i < islands.size(); i++)
-    {
-        islandStarts[i] = islands[i].p1;
-        islandEnds[i] = islands[i].p2;
-    }
-    SetShaderValueV(islandShader, GetShaderLocation(islandShader, "uIslandStarts"),
-                    (float*)&islandStarts, SHADER_UNIFORM_VEC2, islandsCount);
-    SetShaderValueV(islandShader, GetShaderLocation(islandShader, "uIslandEnds"),
-                    (float*)&islandEnds, SHADER_UNIFORM_VEC2, islandsCount);
 }
 
 void InitGPU()
@@ -117,7 +98,6 @@ void InitGPU()
         SetShaderValueV(biomeShader, GetShaderLocation(biomeShader, "uBiomeColor"), colors,
                         SHADER_UNIFORM_VEC4, biomeCount);
     }
-    islandShader = LoadShader(0, "resources/shaders/Island.fs");
 }
 
 void DrawFrame()
@@ -170,7 +150,6 @@ void DrawFrame()
 void FreeResources()
 {
     UnloadShader(biomeShader);
-    UnloadShader(islandShader);
 
     UnloadTexture(lockTexture);
     UnloadTexture(woodTexture);
