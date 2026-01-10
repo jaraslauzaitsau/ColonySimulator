@@ -23,17 +23,21 @@ Ship::Ship(size_t sourceIndex, size_t targetIndex, int peopleCount)
     int counter = 0;
     while (path.empty())
     {
-        while (GetPerlin(pos) >= LAND_START) {
+        while (GetPerlin(pos) >= LAND_START)
+        {
             pos += increment;
-            if (!InsideMap(pos)) {
+            if (!InsideMap(pos))
+            {
                 reached = true;
                 return;
             }
         }
 
-        while (GetPerlin(end) >= LAND_START) {
+        while (GetPerlin(end) >= LAND_START)
+        {
             end -= increment;
-            if (!InsideMap(end)) {
+            if (!InsideMap(end))
+            {
                 reached = true;
                 return;
             }
@@ -42,7 +46,8 @@ Ship::Ship(size_t sourceIndex, size_t targetIndex, int peopleCount)
         path = FindPath(pos, end, false, 1.0f);
 
         counter++;
-        if (counter >= 10) {
+        if (counter >= 5)
+        {
             reached = true;
             return;
         }
@@ -79,7 +84,15 @@ void Ship::Move(float deltaTime)
             reached = true;
             return;
         }
+
         nextPointDir = Vector2Normalize(path[nextPointIdx] - pos);
-        rotation = atan2f(nextPointDir.y, nextPointDir.x) * 180.0f / PI;
+        if (nextPointDir.x > 0.1)
+        {
+            rotation = 1;
+        }
+        else if (nextPointDir.x < -0.1)
+        {
+            rotation = -1;
+        }
     }
 }

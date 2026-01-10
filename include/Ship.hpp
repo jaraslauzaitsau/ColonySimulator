@@ -15,7 +15,7 @@ struct Ship
     size_t sourceIndex = 0;
     size_t targetIndex = 0;
     Vector2 pos{0, 0};
-    float rotation = 0;
+    int rotation = 1;
     Path path{};
     Vector2 nextPointDir{0, 0};
     size_t nextPointIdx = 0;
