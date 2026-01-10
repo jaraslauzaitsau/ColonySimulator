@@ -384,7 +384,7 @@ void BuildIslands(float& loadingPercent, std::atomic<bool>& finished, float step
 
     // Prevent softlocking by having enough people to extract iron and enough iron to colonize
     startIsland.peopleMax = fmax(3, startIsland.peopleMax);
-    startIsland.ironCount *= 3;
+    startIsland.ironCount *= 10;
 
     finished = true;
 }

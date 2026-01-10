@@ -2,7 +2,7 @@
 
 ## Minimum Viable Product (MVP) description
 
-![image](resources/RoadmapMVP.png)
+![image](resources/roadmap/RoadmapMVP.png)
 
 ### World generation
 
