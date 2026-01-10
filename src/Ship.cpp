@@ -80,7 +80,6 @@ void Ship::Move(float deltaTime)
         nextPointIdx++;
         if (nextPointIdx >= path.size())
         {
-            islands[targetIndex].AddPeople(people);
             reached = true;
             return;
         }
