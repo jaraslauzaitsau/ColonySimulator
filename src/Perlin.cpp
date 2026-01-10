@@ -11,57 +11,72 @@ int perlinSeed = 0;
 float perlinScale = 0.12f;
 Vector2 perlinOffset = {0, 0};
 
-float Fract(float x) { return x - floorf(x); }
+// Standard Perlin permutation table (shuffled 0-255)
+static const int p[512] = {
+    151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69,
+    142, 8, 99, 37, 240, 21, 10, 23, 190, 6, 148, 247, 120, 234, 75, 0, 26, 197, 62, 94, 252, 219,
+    203, 117, 35, 11, 32, 57, 177, 33, 88, 237, 149, 56, 87, 174, 20, 125, 136, 171, 168, 68, 175,
+    74, 165, 71, 134, 139, 48, 27, 166, 77, 146, 158, 231, 83, 111, 229, 122, 60, 211, 133, 230,
+    220, 105, 92, 41, 55, 46, 245, 40, 244, 102, 143, 54, 65, 25, 63, 161, 1, 216, 80, 73, 209, 76,
+    132, 187, 208, 89, 18, 169, 200, 196, 135, 130, 116, 188, 159, 86, 164, 100, 109, 198, 173, 186,
+    3, 64, 52, 217, 226, 250, 124, 123, 5, 202, 38, 147, 118, 126, 255, 82, 85, 212, 207, 206, 59,
+    227, 47, 16, 58, 17, 182, 189, 28, 42, 223, 183, 170, 213, 119, 248, 152, 2, 44, 154, 163, 70,
+    221, 153, 101, 155, 167, 43, 172, 9, 129, 22, 39, 253, 19, 98, 108, 110, 79, 113, 224, 232, 178,
+    185, 112, 104, 218, 246, 97, 228, 251, 34, 242, 193, 238, 210, 144, 12, 191, 179, 162, 241, 81,
+    51, 145, 235, 249, 14, 239, 107, 49, 192, 214, 31, 181, 199, 106, 157, 184, 84, 204, 176, 115,
+    121, 50, 45, 127, 4, 150, 254, 138, 236, 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195,
+    78, 66, 215, 61, 156, 180,
+    // Duplicate for overflow protection
+    151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69,
+    142, 8, 99, 37, 240, 21, 10, 23, 190, 6, 148, 247, 120, 234, 75, 0, 26, 197, 62, 94, 252, 219,
+    203, 117, 35, 11, 32, 57, 177, 33, 88, 237, 149, 56, 87, 174, 20, 125, 136, 171, 168, 68, 175,
+    74, 165, 71, 134, 139, 48, 27, 166, 77, 146, 158, 231, 83, 111, 229, 122, 60, 211, 133, 230,
+    220, 105, 92, 41, 55, 46, 245, 40, 244, 102, 143, 54, 65, 25, 63, 161, 1, 216, 80, 73, 209, 76,
+    132, 187, 208, 89, 18, 169, 200, 196, 135, 130, 116, 188, 159, 86, 164, 100, 109, 198, 173, 186,
+    3, 64, 52, 217, 226, 250, 124, 123, 5, 202, 38, 147, 118, 126, 255, 82, 85, 212, 207, 206, 59,
+    227, 47, 16, 58, 17, 182, 189, 28, 42, 223, 183, 170, 213, 119, 248, 152, 2, 44, 154, 163, 70,
+    221, 153, 101, 155, 167, 43, 172, 9, 129, 22, 39, 253, 19, 98, 108, 110, 79, 113, 224, 232, 178,
+    185, 112, 104, 218, 246, 97, 228, 251, 34, 242, 193, 238, 210, 144, 12, 191, 179, 162, 241, 81,
+    51, 145, 235, 249, 14, 239, 107, 49, 192, 214, 31, 181, 199, 106, 157, 184, 84, 204, 176, 115,
+    121, 50, 45, 127, 4, 150, 254, 138, 236, 205, 93, 222, 114, 67, 29, 24, 72, 243, 141, 128, 195,
+    78, 66, 215, 61, 156, 180};
+
+// Fixed gradient vectors (8 directions)
+static const Vector2 g[] = {{1, 0},
+                            {-1, 0},
+                            {0, 1},
+                            {0, -1},
+                            {0.707f, 0.707f},
+                            {-0.707f, 0.707f},
+                            {0.707f, -0.707f},
+                            {-0.707f, -0.707f}};
 
 float Fade(float t) { return t * t * t * (t * (t * 6.0f - 15.0f) + 10.0f); }
 
-float RandPerlin(Vector2 p)
+float Perlin(Vector2 pos)
 {
-    const float OFFSET = 100000.0f;
+    int X = (int)floorf(pos.x) & 255;
+    int Y = (int)floorf(pos.y) & 255;
 
-    unsigned int ix = (unsigned int)floorf(p.x + OFFSET) & 0xFFFFu;
-    unsigned int iy = (unsigned int)floorf(p.y + OFFSET) & 0xFFFFu;
-    unsigned int s = (unsigned int)floorf(perlinSeed + 1000.0f);
+    float x = pos.x - floorf(pos.x);
+    float y = pos.y - floorf(pos.y);
 
-    unsigned int n = ix * 73856093u + iy * 19349669u + s * 83492791u;
+    float u = Fade(x);
+    float v = Fade(y);
 
-    n = ((n >> 16u) ^ n) * 0x45d9f3bu;
-    n = ((n >> 16u) ^ n) * 0x45d9f3bu;
-    n = (n >> 16u) ^ n;
+    // Hash coordinates to find 4 corners
+    int aa = p[(p[(X + perlinSeed) & 255] + Y + perlinSeed) & 255];
+    int ab = p[(p[(X + perlinSeed) & 255] + Y + 1 + perlinSeed) & 255];
+    int ba = p[(p[(X + 1 + perlinSeed) & 255] + Y + perlinSeed) & 255];
+    int bb = p[(p[(X + 1 + perlinSeed) & 255] + Y + 1 + perlinSeed) & 255];
 
-    return (float)n * (1.0f / 4294967296.0f);
-}
+    // Dot products with fixed gradients
+    float n00 = Vector2DotProduct(g[aa & 7], {x, y});
+    float n01 = Vector2DotProduct(g[ab & 7], {x, y - 1.0f});
+    float n10 = Vector2DotProduct(g[ba & 7], {x - 1.0f, y});
+    float n11 = Vector2DotProduct(g[bb & 7], {x - 1.0f, y - 1.0f});
 
-Vector2 Gradient(Vector2 p)
-{
-    float a = RandPerlin(p) * PI * 2;
-    return {cosf(a), sinf(a)};
-}
-
-float Perlin(Vector2 p)
-{
-    Vector2 i0 = {floor(p.x), floor(p.y)};
-    Vector2 f0 = {Fract(p.x), Fract(p.y)};
-
-    Vector2 i1 = Vector2Add(i0, {1.0f, 1.0f});
-
-    Vector2 g00 = Gradient(i0);
-    Vector2 g10 = Gradient({i1.x, i0.y});
-    Vector2 g01 = Gradient({i0.x, i1.y});
-    Vector2 g11 = Gradient(i1);
-
-    float n00 = Vector2DotProduct(g00, f0);
-    float n10 = Vector2DotProduct(g10, {f0.x - 1.0f, f0.y});
-    float n01 = Vector2DotProduct(g01, {f0.x, f0.y - 1.0f});
-    float n11 = Vector2DotProduct(g11, {f0.x - 1.0f, f0.y - 1.0f});
-
-    float u = Fade(f0.x);
-    float v = Fade(f0.y);
-
-    float nx0 = Lerp(n00, n10, u);
-    float nx1 = Lerp(n01, n11, u);
-
-    return Lerp(nx0, nx1, v);
+    return Lerp(Lerp(n00, n10, u), Lerp(n01, n11, u), v);
 }
 
 float GetPerlin(Vector2 v)

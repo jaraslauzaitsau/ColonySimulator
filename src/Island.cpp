@@ -7,10 +7,13 @@
 #include "Drawing.hpp"
 #include "Human.hpp"
 #include "Languages.hpp"
+#include "Pathfinding.hpp"
 #include "Perlin.hpp"
 #include "Settings.hpp"
+#include "Ship.hpp"
 #include "UI.hpp"
 #include "Utils.hpp"
+#include <algorithm>
 #include <cfloat>
 #include <climits>
 #include <cmath>
@@ -55,8 +58,9 @@ Vector2 Island::GetRandomPoint()
 
 void Island::Colonize()
 {
-    if (colonized || woodTotal < woodColonize || ironTotal < ironColonize) return;
-    colonized = true;
+    if (colonized || colonizationInProgress || woodTotal < woodColonize || ironTotal < ironColonize)
+        return;
+    colonizationInProgress = true;
     woodTotal -= woodColonize;
     ironTotal -= ironColonize;
     SendPeople(1);
@@ -64,7 +68,7 @@ void Island::Colonize()
 
 void Island::SendPeople(int count)
 {
-    if (peopleCount + count > peopleMax) return;
+    if (futurePeopleCount + count > peopleMax) return;
     int maxPeopleIslandId = (&islands[0] == this ? 1 : 0);
     for (size_t i = 0; i < islands.size(); i++)
     {
@@ -73,16 +77,30 @@ void Island::SendPeople(int count)
     }
     if (islands[maxPeopleIslandId].peopleCount < count) return;
     islands[maxPeopleIslandId].peopleCount -= count;
-    peopleCount += count;
+    futurePeopleCount += count;
+    ships.emplace_back(islands[maxPeopleIslandId].index, this->index, count);
 
     int counter = 0;
-    for (auto& human: people)
+    for (auto it = people.begin(); it != people.end();)
     {
         if (counter >= count) break;
-        if (human.islandIdx != maxPeopleIslandId) continue;
-        human.islandIdx = index;
-        human.pos = GetRandomPoint();
+        if (it->islandIdx != maxPeopleIslandId)
+        {
+            ++it;
+            continue;
+        }
+        it = people.erase(it);
         counter++;
+    }
+}
+
+void Island::AddPeople(int count)
+{
+    if (!colonized) colonized = true;
+    peopleCount += count;
+    for (int i = 0; i < count; i++)
+    {
+        people.emplace_back(GetRandomPoint(), index);
     }
 }
 

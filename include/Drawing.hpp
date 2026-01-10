@@ -29,6 +29,7 @@ extern Texture lockTexture;
 extern Texture woodTexture;
 extern Texture ironTexture;
 extern Texture humanTexture;
+extern Texture shipTexture;
 
 extern Font myFont;
 const float myFontSpacing = 1;

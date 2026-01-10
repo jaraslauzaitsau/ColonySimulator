@@ -7,6 +7,7 @@
 #include "Human.hpp"
 #include "Island.hpp"
 #include "Json.hpp"
+#include "Ship.hpp"
 #include <vector>
 
 #define MAX_SAVE_SLOTS 7
@@ -17,6 +18,8 @@ struct SaveSlot
     std::string name = "Empty slot";
     std::vector<Island> islands;
     std::vector<Human> people;
+    std::vector<ParentMap> pathMap;
+    std::vector<Ship> ships;
     int woodTotal = 0, ironTotal = 0, peopleTotal = 0;
     Vector2 mapSize{300, 300};
 

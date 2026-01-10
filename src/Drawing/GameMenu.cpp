@@ -9,11 +9,14 @@
 #include "Island.hpp"
 #include "Perlin.hpp"
 #include "Settings.hpp"
+#include "Ship.hpp"
 #include "UI.hpp"
+#include "raylib.h"
 #include <algorithm>
 #include <iostream>
 #include <raygui.h>
 #include <raymath.h>
+#include <vector>
 
 double growthTimer = 0;
 Vector2 lastMousePosition = GetMousePosition();
@@ -93,10 +96,12 @@ void DrawGameMenu()
 {
     UpdateDynamicShaderValues();
 
+    // Draw map
     BeginShaderMode(perlinShader);
     DrawRectangle(0, 0, windowSize.x, windowSize.y, WHITE);
     EndShaderMode();
 
+    // Draw people
     for (auto& human: people)
     {
         if (currentMenu == Menu::Game) human.MoveToTarget(GetFrameTime());
@@ -108,6 +113,46 @@ void DrawGameMenu()
                        human.angle, WHITE);
     }
 
+    // Remove ships that reached their target
+    for (auto it = ships.begin(); it != ships.end();)
+    {
+        if (it->reached)
+        {
+            islands[it->targetIndex].AddPeople(it->people);
+            it = ships.erase(it);
+        }
+        else
+        it++;
+    }
+
+    // Draw ships
+    for (auto& ship: ships)
+    {
+        if (currentMenu == Menu::Game) ship.Move(GetFrameTime());
+        float scale = 0.01f / perlinScale;
+        Vector2 pos = GlslToRaylib(ship.pos);
+        DrawTexturePro(shipTexture,
+                       {0, 0, ship.flip * shipTexture.width * 1.0f, shipTexture.height * 1.0f},
+                       {pos.x, pos.y, shipTexture.width * scale, shipTexture.height * scale},
+                       {shipTexture.width * scale / 2.0f, shipTexture.height * scale}, 0, WHITE);
+        // DrawRectangle(pos.x - 10, pos.y - 20, 20, 20, Color{127, 127, 127, 127});
+    }
+
+    // Draw debug ship path lines
+    // for (auto& ship: ships)
+    // {
+    //     Vector2 lastPoint;
+    //     if (!ship.path.empty()) lastPoint = ship.path[0];
+    //     int counter = 0;
+    //     for (auto& point: ship.path)
+    //     {
+    //         DrawLineEx(GlslToRaylib(lastPoint), GlslToRaylib(point), 3,
+    //                    ColorLerp(RED, BLUE, counter * 1.0f / ship.path.size()));
+    //         lastPoint = point;
+    //         counter++;
+    //     }
+    // }
+  
     for (auto& island: islands)
     {
         island.DrawStats();
@@ -181,7 +226,7 @@ void ProcessPlayerInput(double deltaTime)
                 v.y >= center.y - boxSize.y / 2 && v.y <= center.y + boxSize.y / 2)
             {
                 std::cout << "Clicked on island with id: " << i << '\n';
-                if (islands[i].colonized)
+                if (islands[i].colonized || islands[i].colonizationInProgress)
                     islands[i].SendPeople(1);
                 else
                     islands[i].Colonize();

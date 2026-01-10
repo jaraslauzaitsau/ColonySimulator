@@ -5,9 +5,11 @@
 #include "Progress.hpp"
 #include "Drawing.hpp"
 #include "Human.hpp"
+#include "Island.hpp"
 #include "Languages.hpp"
 #include "Perlin.hpp"
 #include "Settings.hpp"
+#include "Ship.hpp"
 #include <ctime>
 #include <filesystem>
 
@@ -23,6 +25,10 @@ Json SaveSlot::ToJSON()
     for (auto& island: this->islands)
     {
         json["islands"].push_back(island.ToJSON());
+    }
+    for (auto& ship: this->ships)
+    {
+        json["ships"].push_back(ship.ToJSON());
     }
     for (auto& human: this->people)
     {
@@ -49,6 +55,11 @@ void SaveSlot::LoadJSON(Json& json)
         this->islands.push_back(Island::LoadJSON(json["islands"][i]));
         this->islands.back().index = i;
     }
+    this->ships.clear();
+    for (size_t i = 0; i < json["ships"].size(); i++)
+    {
+        this->ships.push_back(Ship::LoadJSON(json["ships"][i]));
+    }
     this->people.clear();
     for (size_t i = 0; i < json["people"].size(); i++)
     {
@@ -66,6 +77,8 @@ void SaveToSlot(int idx)
     if (idx < 0) return;
     saveSlots[idx].seed = perlinSeed;
     saveSlots[idx].islands = islands;
+    saveSlots[idx].pathMap = pathMap;
+    saveSlots[idx].ships = ships;
     saveSlots[idx].people = people;
     saveSlots[idx].woodTotal = woodTotal;
     saveSlots[idx].ironTotal = ironTotal;
@@ -86,11 +99,22 @@ void LoadFromSlot(int idx)
 
     perlinSeed = saveSlots[idx].seed;
     islands = saveSlots[idx].islands;
+    ships = saveSlots[idx].ships;
     people = saveSlots[idx].people;
     woodTotal = saveSlots[idx].woodTotal;
     ironTotal = saveSlots[idx].ironTotal;
     peopleTotal = saveSlots[idx].peopleTotal;
     mapSize = saveSlots[idx].mapSize;
+
+    auto func = [](std::string& label, float& loadingPercent, std::atomic<bool>& finished)
+    {
+        // GeneratePathMap isn't actually using a node graph. It's just a reference
+        label = "Node graph out of date. Rebuilding...";
+        loadingPercent = 0;
+        GeneratePathMap();
+        finished = true;
+    };
+    ShowLoadingScreen(false, func);
 
     SetShaderValue(perlinShader, GetShaderLocation(perlinShader, "uSeed"), &perlinSeed,
                    SHADER_UNIFORM_INT);
@@ -104,7 +128,7 @@ void SaveProgress()
 
     Json json;
 
-    json["version"] = 2;
+    json["version"] = 3;
 
     for (size_t i = 0; i < MAX_SAVE_SLOTS; i++)
     {
@@ -141,6 +165,18 @@ void MigrateV1()
     }
 }
 
+void MigrateV2()
+{
+    // Do nothing
+    // for (size_t i = 0; i < saveSlots.size(); i++)
+    // {
+    //     if (saveSlots[i].seed < 0) continue;
+    //     LoadFromSlot(i);
+    //     GeneratePathCache(saveSlots[i].islands, saveSlots[i].pathCache);
+    //     saveSlots[i].ships = {};
+    // }
+}
+
 void LoadProgress()
 {
     if (!std::filesystem::exists("saves.json"))
@@ -167,5 +203,10 @@ void LoadProgress()
     {
         MigrateV1();
         version = 2;
+    }
+    if (version == 2)
+    {
+        MigrateV2();
+        version = 3;
     }
 }

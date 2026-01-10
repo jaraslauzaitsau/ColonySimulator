@@ -6,6 +6,7 @@
 #pragma once
 
 #include "Json.hpp"
+#include "Pathfinding.hpp"
 #include <atomic>
 #include <raylib.h>
 #include <vector>
@@ -20,13 +21,16 @@ struct Biome
 #define GROWTH_PERIOD 1
 #define DEFAULT_TAXES 67
 
+#define PORTS_PER_ISLAND 1
+
 struct Island
 {
     Vector2 p1 = {0, 0}, p2 = {0, 0};
     float area = 0;
     int woodColonize = 0, ironColonize = 0, woodCount = 0, woodGrowth = 0, woodMax = 0,
-        ironCount = 0, peopleCount = 0, peopleMax = 0;
+        ironCount = 0, peopleCount = 0, peopleMax = 0, futurePeopleCount = 0;
     float peopleGrowth = 0, addPeopleFraction = 0;
+    bool colonizationInProgress = false;
     bool colonized = false;
     int taxes = DEFAULT_TAXES, efficiency = 50;
     int index = -1;
@@ -44,6 +48,7 @@ struct Island
     Vector2 GetRandomPoint();
     void Colonize();
     void SendPeople(int count);
+    void AddPeople(int count);
     void GrowthTick();
     void DrawStats();
 
@@ -59,6 +64,17 @@ extern std::vector<Island> islands;
 extern int woodTotal;
 extern int ironTotal;
 extern int peopleTotal;
+
+// Custom hash for std::pair
+template <class T1, class T2> struct std::hash<std::pair<T1, T2>>
+{
+    size_t operator()(const std::pair<T1, T2>& p) const
+    {
+        size_t hash1 = std::hash<T1>{}(p.first);
+        size_t hash2 = std::hash<T2>{}(p.second);
+        return hash1 ^ hash2;
+    }
+};
 
 void BuildIslands(std::atomic<bool>& finished, float stepSize = 0.1f);
 void BuildMap();

@@ -7,6 +7,7 @@
 #include "Drawing.hpp"
 #include <atomic>
 #include <cstdlib>
+#include <ostream>
 #include <raygui.h>
 #include <raylib.h>
 #include <string>
@@ -17,6 +18,12 @@ inline float GetRandomFloat(float a, float b) { return rand() * 1.0f / RAND_MAX 
 inline void DrawTextCustom(const char* text, Vector2 pos, int fontSize, Color color)
 {
     DrawTextEx(myFont, text, pos, fontSize, myFontSpacing, color);
+}
+
+inline std::ostream& operator<<(std::ostream& out, const Vector2& vec)
+{
+    out << vec.x << ' ' << vec.y;
+    return out;
 }
 
 template <typename Func, typename... Args>
@@ -39,6 +46,8 @@ void ShowLoadingScreen(bool showProgressbar, Func&& f, Args&&... args)
         BeginDrawing();
 
         ClearBackground(BLACK);
+
+        UpdateWindowSize();
 
         float fontSize = 24;
         DrawTextCustom(label.c_str(), {0, windowSize.y - fontSize}, fontSize, WHITE);
