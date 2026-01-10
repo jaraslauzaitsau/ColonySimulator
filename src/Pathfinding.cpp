@@ -7,90 +7,118 @@
 #include "Perlin.hpp"
 #include "Settings.hpp"
 #include <algorithm>
-#include <map>
 #include <queue>
 #include <raymath.h>
 
-bool operator<(const Vector2& a, const Vector2& b)
+std::vector<ParentMap> pathMap;
+
+std::vector<Vector2> directions{{0, -1}, {1, -1}, {1, 0},  {1, 1},
+                                {0, 1},  {-1, 1}, {-1, 0}, {-1, -1}};
+
+int Vector2ToInt(Vector2 v)
 {
-    const float eps = 0.01f;
-    if (std::abs(a.x - b.x) > eps) return a.x < b.x;
-    if (std::abs(a.y - b.y) > eps) return a.y < b.y;
-    return false;
+    int ix = (int)roundf(v.x + mapSize.x / 2.0f);
+    int iy = (int)roundf(v.y + mapSize.y / 2.0f);
+
+    ix = std::clamp(ix, 0, (int)mapSize.x - 1);
+    iy = std::clamp(iy, 0, (int)mapSize.y - 1);
+
+    return iy * (int)mapSize.x + ix;
+}
+
+Vector2 IntToVector2(int val)
+{
+    int ix = val % (int)mapSize.x;
+    int iy = val / (int)mapSize.x;
+
+    return {(float)ix - mapSize.x / 2.0f, (float)iy - mapSize.y / 2.0f};
+}
+
+bool IsInsideMap(Vector2 v)
+{
+    return v.x >= -mapSize.x / 2 && v.x < mapSize.x / 2 && v.y >= -mapSize.y / 2 &&
+           v.y < mapSize.y / 2;
 }
 
 struct Node
 {
-    Vector2 pos;
+    int idx;
     float cost;
-
     bool operator>(const Node& other) const { return cost > other.cost; }
 };
 
-float GetHeuristic(Vector2 a, Vector2 b) { return std::abs(a.x - b.x) + std::abs(a.y - b.y); }
-
-Path FindPath(Vector2 start, Vector2 goal, bool onLand, float stepSize)
+void GeneratePathMap()
 {
-    std::priority_queue<Node, std::vector<Node>, std::greater<Node>> openSet;
-    std::map<Vector2, Vector2> cameFrom;
-    std::map<Vector2, float> cost; // Cost from start to current node
+    pathMap.clear();
+    pathMap.resize(islands.size());
 
-    openSet.push({start, GetHeuristic(start, goal)});
-    cost[start] = 0.0f;
-
-    while (!openSet.empty())
+    std::vector<bool> onLand(mapSize.x * mapSize.y, false);
+    for (size_t i = 0; i < mapSize.x; i++)
     {
-        Vector2 current = openSet.top().pos;
-        openSet.pop();
-
-        float dx = current.x - goal.x;
-        float dy = current.y - goal.y;
-
-        // If we are within half a step of the goal, we've arrived
-        if ((dx * dx + dy * dy) < (stepSize * stepSize * 0.5f))
+        for (size_t j = 0; j < mapSize.y; j++)
         {
-            // Reconstruct path
-            Path path;
-            while (cameFrom.count(current))
-            {
-                path.push_back(current);
-                current = cameFrom[current];
-            }
-            std::reverse(path.begin(), path.end());
-            return path;
+            onLand[j * mapSize.x + i] = GetPerlin(IntToVector2(j * mapSize.x + i)) >= LAND_START;
         }
+    }
 
-        Vector2 neighbors[4] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-        for (auto& offset: neighbors)
+    for (size_t i = 0; i < islands.size(); i++)
+    {
+        auto& island = islands[i];
+        pathMap[i].assign(mapSize.x * mapSize.y, -1);
+
+        std::priority_queue<Node, std::vector<Node>, std::greater<Node>> pq;
+        std::vector<float> minCosts(mapSize.x * mapSize.y, std::numeric_limits<float>::max());
+
+        Vector2 startPos = island.GetRandomPoint();
+        Vector2 endPos = {0, 0};
+        Vector2 dir = Vector2Normalize(endPos - startPos);
+        do
         {
-            Vector2 neighbor = {current.x + offset.x * stepSize, current.y + offset.y * stepSize};
+            startPos += dir;
+        } while (onLand[Vector2ToInt(startPos)]);
 
-            if (neighbor.x < -mapSize.x / 2 || neighbor.x > mapSize.x / 2 ||
-                neighbor.y < -mapSize.y / 2 || neighbor.y > mapSize.y / 2)
-                continue;
+        auto start = Vector2ToInt(startPos);
+        minCosts[start] = 0;
+        pq.push({start, 0});
 
-            auto neighborPerlin = GetPerlin(neighbor);
-            if (onLand && neighborPerlin < LAND_START) continue;
-            if (!onLand && neighborPerlin >= LAND_START) continue;
+        while (!pq.empty())
+        {
+            Node u = pq.top();
+            pq.pop();
 
-            // Weight calculation
-            float currentNoise = GetPerlin(current);
-            float neighborNoise = neighborPerlin;
+            if (u.cost > minCosts[u.idx]) continue;
 
-            // Penalty for climbing steep noise gradients
-            float diff = std::abs(neighborNoise - currentNoise);
-            float moveCost = 1.0f + std::pow(diff * 10.0f, 2);
+            Vector2 uVec = IntToVector2(u.idx);
 
-            float tentativeCost = cost[current] + moveCost;
-
-            if (!cost.count(neighbor) || tentativeCost < cost[neighbor])
+            for (auto& dir: directions)
             {
-                cameFrom[neighbor] = current;
-                cost[neighbor] = tentativeCost;
-                float cost = tentativeCost + GetHeuristic(neighbor, goal);
-                openSet.push({neighbor, cost});
+                Vector2 vVec = uVec + dir;
+                if (!IsInsideMap(uVec + dir) || onLand[Vector2ToInt(uVec + dir)]) continue;
+
+                int v = Vector2ToInt(vVec);
+
+                float moveStep = (dir.x != 0 && dir.y != 0) ? 1.414f : 1.0f;
+                float newCost = u.cost + moveStep;
+
+                if (newCost < minCosts[v])
+                {
+                    minCosts[v] = newCost;
+                    pathMap[i][v] = u.idx;
+                    pq.push({v, newCost});
+                }
             }
         }
     }
-    return {};
+}
+
+Path GetPath(Vector2 startPos, int targetIslandIdx)
+{
+    Path path;
+    int parent = Vector2ToInt(startPos);
+    while (parent != -1)
+    {
+        path.push_back(IntToVector2(parent));
+        parent = pathMap[targetIslandIdx][parent];
+    }
+    return path;
 }

@@ -9,7 +9,7 @@
 #include "Pathfinding.hpp"
 #include <raylib.h>
 
-#define SHIP_SPEED 25.0f
+#define SHIP_SPEED 25
 
 struct Ship
 {
@@ -23,6 +23,7 @@ struct Ship
     int people = 0;
     bool reached = false;
 
+    Ship() = default;
     Ship(int sourceIndex, int targetIndex, int peopleCount = 1);
     void Move(float deltaTime);
 

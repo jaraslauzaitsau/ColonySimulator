@@ -9,7 +9,6 @@
 #include "Pathfinding.hpp"
 #include <atomic>
 #include <raylib.h>
-#include <unordered_map>
 #include <vector>
 
 struct Biome
@@ -66,8 +65,7 @@ extern int woodTotal;
 extern int ironTotal;
 extern int peopleTotal;
 
-// Custom hash for std::pair<int, int>
-// Required as C++20 is not supported
+// Custom hash for std::pair
 template <class T1, class T2> struct std::hash<std::pair<T1, T2>>
 {
     size_t operator()(const std::pair<T1, T2>& p) const
@@ -78,16 +76,5 @@ template <class T1, class T2> struct std::hash<std::pair<T1, T2>>
     }
 };
 
-extern std::unordered_map<std::pair<int, int>, std::vector<Path>> pathCache;
-
-void GeneratePathCache(std::vector<Island>& islands,
-                       std::unordered_map<std::pair<int, int>, std::vector<Path>>& pathCache,
-                       float& loadingPercent);
-inline void GeneratePathCache(std::vector<Island>& islands,
-                              std::unordered_map<std::pair<int, int>, std::vector<Path>>& pathCache)
-{
-    float loadingPercent;
-    GeneratePathCache(islands, pathCache, loadingPercent);
-}
 void BuildIslands(std::atomic<bool>& finished, float stepSize = 0.1f);
 void BuildMap();

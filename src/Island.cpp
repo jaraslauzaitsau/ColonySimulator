@@ -45,8 +45,6 @@ std::vector<Island> islands;
 
 int woodTotal = 0, ironTotal = 0, peopleTotal = 0;
 
-std::unordered_map<std::pair<int, int>, std::vector<Path>> pathCache;
-
 Vector2 Island::GetRandomPoint()
 {
     Vector2 pos;
@@ -288,72 +286,6 @@ Island Island::LoadJSON(Json& json)
     return island;
 }
 
-void GeneratePathCache(std::vector<Island>& islands,
-                       std::unordered_map<std::pair<int, int>, std::vector<Path>>& pathCache,
-                       float& loadingPercent)
-{
-    pathCache.clear();
-    for (size_t i = 0; i < islands.size(); i++)
-    {
-        for (size_t j = 0; j < islands.size(); j++)
-        {
-            if (i == j) continue;
-            pathCache[{i, j}] = {};
-
-            if (pathCache.find({j, i}) != pathCache.end())
-            {
-                // Reverse paths
-                for (Path& path: pathCache[{j, i}])
-                {
-                    Path reversedPath = path;
-                    std::reverse(reversedPath.begin(), reversedPath.end());
-                    pathCache[{i, j}].push_back(reversedPath);
-                }
-                loadingPercent += 1.0f / islands.size() / islands.size() / 3 * 100;
-                continue;
-            }
-
-            for (size_t k = 0; k < PORTS_PER_ISLAND; k++)
-            {
-                // Find water nearest to the other island
-                auto pos = islands[i].GetRandomPoint();
-                Vector2 end = islands[j].GetRandomPoint();
-                Vector2 increment = Vector2Normalize(end - pos) * 0.25f;
-
-                Path path;
-                int counter = 0;
-                while (path.empty())
-                {
-                    while (GetPerlin(pos) >= LAND_START)
-                    {
-                        pos += increment;
-                        if (!InsideMap(pos)) break;
-                    }
-
-                    while (GetPerlin(end) >= LAND_START)
-                    {
-                        end -= increment;
-                        if (!InsideMap(end)) break;
-                    }
-
-                    if (!InsideMap(pos) || !InsideMap(end)) break;
-
-                    path = FindPath(pos, end, false, 1.0f);
-
-                    counter++;
-                    if (counter >= 1) break;
-                }
-                if (path.empty()) path = {pos};
-
-                pathCache[{i, j}].push_back(path);
-                std::cout << "Generated path from island " << i << " to island " << j
-                          << ", port " << k << '\n';
-            }
-            loadingPercent += 1.0f / islands.size() / islands.size() / 3 * 100;
-        }
-    }
-}
-
 void BuildIslands(float& loadingPercent, std::atomic<bool>& finished, float stepSize)
 {
     // Find islands
@@ -378,7 +310,7 @@ void BuildIslands(float& loadingPercent, std::atomic<bool>& finished, float step
             }
             if (map[i][j] == INT_MAX) map[i][j] = counter++;
         }
-        loadingPercent += 1.0f / maxY / 3 * 100;
+        loadingPercent += 1.0f / maxY / 2 * 100;
     }
     std::cout << "Total island count: " << counter - same.size() << '\n';
 
@@ -404,7 +336,7 @@ void BuildIslands(float& loadingPercent, std::atomic<bool>& finished, float step
             corner.second.x = fmax(corner.second.x, j * stepSize - mapSize.x / 2);
             corner.second.y = fmax(corner.second.y, i * stepSize - mapSize.y / 2);
         }
-        loadingPercent += 1.0f / maxY / 3 * 100;
+        loadingPercent += 1.0f / maxY / 2 * 100;
     }
 
     // Add large enough islands to the main vector
@@ -428,8 +360,6 @@ void BuildIslands(float& loadingPercent, std::atomic<bool>& finished, float step
         passed++;
     }
     std::cout << "Found " << passed << " large enough islands\n";
-
-    GeneratePathCache(islands, pathCache, loadingPercent);
 
     // Set the closest island to center as colonized
     int minDistanceIslandIdx = 0;

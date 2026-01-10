@@ -96,10 +96,12 @@ void DrawGameMenu()
 {
     UpdateDynamicShaderValues();
 
+    // Draw map
     BeginShaderMode(perlinShader);
     DrawRectangle(0, 0, windowSize.x, windowSize.y, WHITE);
     EndShaderMode();
 
+    // Draw people
     for (auto& human: people)
     {
         if (currentMenu == Menu::Game) human.MoveToTarget(GetFrameTime());
@@ -120,8 +122,10 @@ void DrawGameMenu()
             it = ships.erase(it);
         }
         else
-            it++;
+        it++;
     }
+
+    // Draw ships
     for (auto& ship: ships)
     {
         if (currentMenu == Menu::Game) ship.Move(GetFrameTime());
@@ -133,6 +137,21 @@ void DrawGameMenu()
                        {shipTexture.width * scale / 2.0f, shipTexture.height * scale}, 0, WHITE);
         // DrawRectangle(pos.x - 10, pos.y - 20, 20, 20, Color{127, 127, 127, 127});
     }
+
+    // Draw debug ship path lines
+    // for (auto& ship: ships)
+    // {
+    //     Vector2 lastPoint;
+    //     if (!ship.path.empty()) lastPoint = ship.path[0];
+    //     int counter = 0;
+    //     for (auto& point: ship.path)
+    //     {
+    //         DrawLineEx(GlslToRaylib(lastPoint), GlslToRaylib(point), 3,
+    //                    ColorLerp(RED, BLUE, counter * 1.0f / ship.path.size()));
+    //         lastPoint = point;
+    //         counter++;
+    //     }
+    // }
 
     for (auto& island: islands)
     {

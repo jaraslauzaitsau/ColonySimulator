@@ -15,7 +15,15 @@ std::vector<Ship> ships;
 Ship::Ship(int sourceIndex, int targetIndex, int peopleCount)
     : sourceIndex(sourceIndex), targetIndex(targetIndex), people(peopleCount)
 {
-    path = pathCache[{sourceIndex, targetIndex}][rand() % PORTS_PER_ISLAND];
+    Vector2 startPos = islands[sourceIndex].GetRandomPoint();
+    Vector2 endPos = islands[targetIndex].GetRandomPoint();
+    Vector2 dir = Vector2Normalize(endPos - startPos);
+    do
+    {
+        startPos += dir;
+    } while (GetPerlin(startPos) >= LAND_START);
+
+    path = GetPath(startPos, targetIndex);
     pos = path[0];
 
     nextPointDir = Vector2Normalize(path[0] - pos);
@@ -49,27 +57,26 @@ Json Ship::ToJSON()
     Json json;
     json["sourceIndex"] = sourceIndex;
     json["targetIndex"] = targetIndex;
+
     json["pos"].format = JsonFormat::Inline;
     json["pos"].push_back(pos.x);
     json["pos"].push_back(pos.y);
-    json["nextPointIdx"] = static_cast<int>(nextPointIdx);
+
     json["people"] = people;
-    json["reached"] = reached;
     return json;
 }
 
 Ship Ship::LoadJSON(Json& json)
 {
-    Ship ship(json["sourceIndex"].GetInt(), json["targetIndex"].GetInt(), json["people"].GetInt());
+    Ship ship;
+    ship.sourceIndex = json["sourceIndex"].GetInt();
+    ship.targetIndex = json["targetIndex"].GetInt();
+    ship.people = json["people"].GetInt();
     ship.pos = {static_cast<float>(json["pos"][0].GetDouble()),
                 static_cast<float>(json["pos"][1].GetDouble())};
     ship.nextPointIdx = static_cast<size_t>(json["nextPointIdx"].GetInt());
     ship.people = json["people"].GetInt();
-    ship.reached = json["reached"].GetBool();
-
-    ship.path = pathCache[{ship.sourceIndex, ship.targetIndex}][rand() % PORTS_PER_ISLAND];
-    if (ship.nextPointIdx < ship.path.size())
-        ship.nextPointDir = Vector2Normalize(ship.path[ship.nextPointIdx] - ship.pos);
+    ship.reached = true;
 
     return ship;
 }
